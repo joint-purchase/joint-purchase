@@ -69,5 +69,5 @@
    - 상품 리뷰 시 사진, 리뷰 내용, 점수를 입력할 수 있다.
    - 리뷰 등록 시 상품을 구매한 사용자의 아이디, 상품 이름, 등록 날짜와 수정 날짜가 추가로 표시된다.
  
-![ERD](doc/img/스크린샷 2024-01-28 021212.png)
+![ERD2](https://github.com/YouHyeunWoo/Joint_Purchase/assets/141150761/42ca9cb5-5a11-4454-bf72-e2c1a3686f39)
 
