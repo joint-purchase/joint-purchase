@@ -1,4 +1,4 @@
-package com.jointpurchases.domain.point.model.Dto;
+package com.jointpurchases.domain.point.model.dto;
 
 import lombok.Builder;
 import lombok.Data;

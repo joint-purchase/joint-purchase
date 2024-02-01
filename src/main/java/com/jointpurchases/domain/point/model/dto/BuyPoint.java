@@ -1,4 +1,4 @@
-package com.jointpurchases.domain.point.model.Dto;
+package com.jointpurchases.domain.point.model.dto;
 
 import lombok.Builder;
 import lombok.Data;
@@ -22,13 +22,13 @@ public class BuyPoint {
         private String eventType;
         private LocalDateTime createdDate;
 
-        public static Response fromPointDto(PointChangeDto pointDto){
+        public static Response fromPointDto(PointChangeDto pointChangeDto){
             return Response.builder()
-                    .email(pointDto.getEmail())
-                    .changedPoint(pointDto.getChangedPoint())
-                    .currentPoint(pointDto.getCurrentPoint())
-                    .eventType(pointDto.getEventType())
-                    .createdDate(pointDto.getCreatedDate())
+                    .email(pointChangeDto.getEmail())
+                    .changedPoint(pointChangeDto.getChangedPoint())
+                    .currentPoint(pointChangeDto.getCurrentPoint())
+                    .eventType(pointChangeDto.getEventType())
+                    .createdDate(pointChangeDto.getCreatedDate())
                     .build();
         }
     }

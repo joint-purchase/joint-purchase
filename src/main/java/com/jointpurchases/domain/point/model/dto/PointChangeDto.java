@@ -1,4 +1,4 @@
-package com.jointpurchases.domain.point.model.Dto;
+package com.jointpurchases.domain.point.model.dto;
 
 import com.jointpurchases.domain.point.model.entity.PointEntity;
 import lombok.Builder;
@@ -13,10 +13,9 @@ public class PointChangeDto {
     private Long changedPoint;
     private Long currentPoint;
     private String eventType;
-
     private LocalDateTime createdDate;
 
-    public static PointChangeDto fromEntity(PointEntity pointEntity){
+    public static PointChangeDto fromEntity(PointEntity pointEntity) {
         return PointChangeDto.builder()
                 .email(pointEntity.getMemberEntity().getEmail())
                 .changedPoint(pointEntity.getChangedPoint())

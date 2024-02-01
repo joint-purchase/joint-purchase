@@ -28,5 +28,6 @@ public class PointEntity {
     private LocalDateTime createdDate;
 
     @ManyToOne
+    @JoinColumn(name = "member_id")
     private MemberEntity memberEntity;
 }
