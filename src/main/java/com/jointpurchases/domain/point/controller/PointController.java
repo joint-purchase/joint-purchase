@@ -1,14 +1,16 @@
 package com.jointpurchases.domain.point.controller;
 
-import com.jointpurchases.domain.point.model.Dto.BuyPoint;
-import com.jointpurchases.domain.point.model.Dto.PointHistoryResponse;
-import com.jointpurchases.domain.point.model.Dto.SearchPoint;
+import com.jointpurchases.domain.point.model.dto.BuyPoint;
+import com.jointpurchases.domain.point.model.dto.PointHistoryResponse;
+import com.jointpurchases.domain.point.model.dto.RefundPoint;
+import com.jointpurchases.domain.point.model.dto.SearchPoint;
 import com.jointpurchases.domain.point.service.PointService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,19 +27,31 @@ public class PointController {
 
     //현재 포인트 조회
     @GetMapping("/point")
-    public SearchPoint searchPoint(@RequestParam String email) {
-        return this.pointService.searchPoint(email);
+    public SearchPoint getCurrentPoint(@RequestParam String email) {
+        return this.pointService.getPoint(email);
     }
 
     //포인트 사용 내역 조회
     //기간을 입력하여 조회
     @GetMapping("/point/history")
-    public PointHistoryResponse searchPointHistory(
+    public PointHistoryResponse getPointHistory(
             @RequestParam
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDate startDate,
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDate endDate) {
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam String email) {
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.atTime(23, 59, 59);
 
-        return null;
+        return new PointHistoryResponse(startDate, endDate,
+                this.pointService.getPointHistory(startDateTime, endDateTime, email));
+    }
+
+    //포인트 환불
+    @PostMapping("/point/refunds")
+    public RefundPoint.Response refundPoint(@RequestBody RefundPoint.Request request) {
+        return RefundPoint.Response.fromPointDto(
+                this.pointService.refundPoint(request.getEmail(),
+                        request.getRefundPoint()));
     }
 }
