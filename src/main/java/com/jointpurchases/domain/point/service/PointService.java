@@ -1,7 +1,7 @@
 package com.jointpurchases.domain.point.service;
 
-import com.jointpurchases.domain.point.model.dto.PointChangeDto;
 import com.jointpurchases.domain.point.model.dto.GetPoint;
+import com.jointpurchases.domain.point.model.dto.PointChangeDto;
 import com.jointpurchases.domain.point.model.dto.PointHistory;
 import com.jointpurchases.domain.point.model.entity.MemberEntity;
 import com.jointpurchases.domain.point.model.entity.PointEntity;
@@ -84,6 +84,31 @@ public class PointService {
                 .map(e -> new PointHistory(e.getId(), e.getChangedPoint(),
                         e.getCurrentPoint(), e.getEventType(), e.getCreatedDate()))
                 .collect(Collectors.toList());
+    }
+
+    //포인트 환불
+    //pointEntity == null인 경우(거래가 한번도 없는 경우)와
+    //환불 포인드가 잔액 포인트 보다 많은 경우 예외 발생
+    @Transactional
+    public PointChangeDto refundPoint(String email, Long refundPoint) {
+        MemberEntity memberEntity = getMemberEntity(email);
+
+        PointEntity pointEntity = getLatestPointForEntity(memberEntity);
+
+        if (pointEntity == null || pointEntity.getCurrentPoint() < refundPoint) {
+            throw new RuntimeException("환불할 포인트 잔액이 부족합니다.");
+        } else {
+            Long currentPoint = pointEntity.getCurrentPoint() - refundPoint;
+
+            return PointChangeDto.fromEntity(this.pointRepository.save(PointEntity.builder()
+                    .memberEntity(memberEntity)
+                    .changedPoint(refundPoint * -1)
+                    .currentPoint(currentPoint)
+                    .eventType("포인트 환불")
+                    .createdDate(LocalDateTime.now())
+                    .build())
+            );
+        }
     }
 
     private PointEntity getLatestPointForEntity(MemberEntity memberEntity) {

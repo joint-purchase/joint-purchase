@@ -3,6 +3,7 @@ package com.jointpurchases.domain.point.controller;
 import com.jointpurchases.domain.point.model.dto.BuyPoint;
 import com.jointpurchases.domain.point.model.dto.GetPoint;
 import com.jointpurchases.domain.point.model.dto.PointHistoryResponse;
+import com.jointpurchases.domain.point.model.dto.RefundPoint;
 import com.jointpurchases.domain.point.service.PointService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -44,6 +45,14 @@ public class PointController {
 
         return new PointHistoryResponse(startDate, endDate,
                 this.pointService.getPointHistory(startDateTime, endDateTime, email));
+    }
+
+    //포인트 환불
+    @PostMapping("/point/refunds")
+    public RefundPoint.Response refundPoint(@RequestBody RefundPoint.Request request) {
+        return RefundPoint.Response.fromPointDto(
+                this.pointService.refundPoint(request.getEmail(),
+                        request.getRefundPoint()));
     }
 
 }
