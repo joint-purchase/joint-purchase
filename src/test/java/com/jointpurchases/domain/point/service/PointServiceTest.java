@@ -2,6 +2,7 @@ package com.jointpurchases.domain.point.service;
 
 import com.jointpurchases.domain.point.model.dto.GetPoint;
 import com.jointpurchases.domain.point.model.dto.PointChangeDto;
+import com.jointpurchases.domain.point.model.dto.PointHistory;
 import com.jointpurchases.domain.point.model.entity.MemberEntity;
 import com.jointpurchases.domain.point.model.entity.PointEntity;
 import com.jointpurchases.domain.point.repository.MemberRepository;
@@ -133,4 +134,43 @@ class PointServiceTest {
         assertEquals(4000L, getPoint.getCurrentPoint());
     }
 
+    @Test
+    @DisplayName("포인트 사용 내역 조회")
+    void getPointHistory() {
+        //given
+        MemberEntity member = MemberEntity.builder()
+                .id(11L)
+                .email("dbdbdb@naver.com")
+                .build();
+
+        PointEntity point = PointEntity.builder()
+                .id(3L)
+                .eventType("포인트 구매")
+                .changedPoint(4000L)
+                .currentPoint(8000L)
+                .createdDate(LocalDateTime.of(2023, 5, 10, 13, 56, 32))
+                .memberEntity(member)
+                .build();
+
+        List<PointEntity> pointEntityList = Collections.singletonList(point);
+
+        given(memberRepository.findByEmail(anyString()))
+                .willReturn(Optional.ofNullable(member));
+        given(pointRepository.findAllByMemberEntityAndCreatedDateBetween(any(), any(), any()))
+                .willReturn(pointEntityList);
+
+        //when
+        LocalDateTime startDateTime = LocalDateTime.of(2023, 5, 1, 0, 0);
+        LocalDateTime endDateTime = LocalDateTime.of(2023, 5, 31, 23, 59);
+        List<PointHistory> pointHistories = pointService.getPointHistory(startDateTime, endDateTime, "dbdbdb@naver.com");
+        PointHistory pointHistory = pointHistories.get(0);
+
+        //then
+        assertAll(
+                () -> assertEquals(4000L, pointHistory.getChangedPoint(), "변경된 포인트 검증"),
+                () -> assertEquals(8000L, pointHistory.getCurrentPoint(), "현재 포인트 검증"),
+                () -> assertEquals(LocalDateTime.of(2023, 5, 10, 13, 56, 32)
+                        , pointHistory.getCreatedDate(), "거래일 검증")
+        );
+    }
 }
