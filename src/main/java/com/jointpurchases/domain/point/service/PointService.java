@@ -2,6 +2,7 @@ package com.jointpurchases.domain.point.service;
 
 import com.jointpurchases.domain.point.model.dto.PointChangeDto;
 import com.jointpurchases.domain.point.model.dto.GetPoint;
+import com.jointpurchases.domain.point.model.dto.PointHistory;
 import com.jointpurchases.domain.point.model.entity.MemberEntity;
 import com.jointpurchases.domain.point.model.entity.PointEntity;
 import com.jointpurchases.domain.point.repository.MemberRepository;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -69,6 +71,20 @@ public class PointService {
                 .build();
     }
 
+    //특정 기간 사이의 포인드 사용 내역 조회
+    public List<PointHistory> getPointHistory(LocalDateTime startDateTime,
+                                              LocalDateTime endDateTime, String email) {
+        MemberEntity memberEntity = getMemberEntity(email);
+
+        List<PointEntity> pointEntityList =
+                this.pointRepository.findAllByMemberEntityAndCreatedDateBetween(
+                        memberEntity, startDateTime, endDateTime);
+
+        return pointEntityList.stream()
+                .map(e -> new PointHistory(e.getId(), e.getChangedPoint(),
+                        e.getCurrentPoint(), e.getEventType(), e.getCreatedDate()))
+                .collect(Collectors.toList());
+    }
 
     private PointEntity getLatestPointForEntity(MemberEntity memberEntity) {
         //pageable로 가장 최근의 포인트 내역 1개만 조회

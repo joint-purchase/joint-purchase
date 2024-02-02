@@ -2,9 +2,14 @@ package com.jointpurchases.domain.point.controller;
 
 import com.jointpurchases.domain.point.model.dto.BuyPoint;
 import com.jointpurchases.domain.point.model.dto.GetPoint;
+import com.jointpurchases.domain.point.model.dto.PointHistoryResponse;
 import com.jointpurchases.domain.point.service.PointService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,6 +28,22 @@ public class PointController {
     @GetMapping("/point")
     public GetPoint getCurrentPoint(@RequestParam String email) {
         return this.pointService.getPoint(email);
+    }
+
+    //포인트 사용 내역 조회
+    //기간을 입력하여 조회
+    @GetMapping("/point/history")
+    public PointHistoryResponse getPointHistory(
+            @RequestParam
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam String email) {
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.atTime(23, 59, 59);
+
+        return new PointHistoryResponse(startDate, endDate,
+                this.pointService.getPointHistory(startDateTime, endDateTime, email));
     }
 
 }
