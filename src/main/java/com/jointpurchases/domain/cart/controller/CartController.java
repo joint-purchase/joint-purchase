@@ -1,11 +1,12 @@
 package com.jointpurchases.domain.cart.controller;
 
 import com.jointpurchases.domain.cart.model.dto.Cart;
+import com.jointpurchases.domain.cart.model.dto.GetCartList;
 import com.jointpurchases.domain.cart.service.CartService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,6 +19,18 @@ public class CartController {
                                           @RequestBody String email) {
         return Cart.Response.fromDto(this.cartService.addProductToCart(
                 product.getProductId(), product.getAmount(), email));
+    }
+
+    //장바구니 조회
+    @GetMapping("/cart")
+    public GetCartList getCartList(@RequestParam String email) {
+        List<Cart.Response> cartList = this.cartService.getCartList(email);
+
+        //cartList totalPrice를 더해서 계산 해야 하는 총액을 계산
+        Long payTotalPrice = cartList.stream()
+                .mapToLong(Cart.Response::getTotalPrice).sum();
+
+        return new GetCartList(payTotalPrice, cartList);
     }
 
 

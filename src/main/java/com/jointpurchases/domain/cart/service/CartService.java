@@ -1,5 +1,6 @@
 package com.jointpurchases.domain.cart.service;
 
+import com.jointpurchases.domain.cart.model.dto.Cart;
 import com.jointpurchases.domain.cart.model.dto.CartDto;
 import com.jointpurchases.domain.cart.model.entity.CartEntity;
 import com.jointpurchases.domain.cart.model.entity.ProductEntity;
@@ -10,6 +11,9 @@ import com.jointpurchases.domain.product.repository.ProductRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -25,7 +29,7 @@ public class CartService {
 
         ProductEntity productEntity = getProductEntity(productId);
 
-        if(this.cartRepository.existsByProductId(productEntity.getProductId())){
+        if (this.cartRepository.existsByProductId(productEntity.getProductId())) {
             throw new RuntimeException("이미 장바구니에 담긴 상품 입니다.");
         }
 
@@ -36,6 +40,21 @@ public class CartService {
                         .memberEntity(memberEntity)
                         .totalPrice(productEntity.getPrice() * amount)
                         .build()));
+    }
+
+    //장바구니에 담긴 상품 조회
+    public List<Cart.Response> getCartList(String email) {
+        MemberEntity memberEntity = getMemberEntity(email);
+
+        List<CartEntity> cartEntityList =
+                this.cartRepository.findAllByMemberEntity(memberEntity);
+
+        if (cartEntityList.isEmpty()) {
+            throw new RuntimeException("장바구니에 담은 상품이 없습니다.");
+        }
+
+        return cartEntityList.stream().map(e -> new Cart.Response(e.getProductEntity().getProductName(),
+                e.getAmount(), e.getTotalPrice())).collect(Collectors.toList());
     }
 
     private MemberEntity getMemberEntity(String email) {
