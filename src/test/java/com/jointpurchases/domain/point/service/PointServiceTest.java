@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -171,6 +172,50 @@ class PointServiceTest {
                 () -> assertEquals(8000L, pointHistory.getCurrentPoint(), "현재 포인트 검증"),
                 () -> assertEquals(LocalDateTime.of(2023, 5, 10, 13, 56, 32)
                         , pointHistory.getCreatedDate(), "거래일 검증")
+        );
+    }
+
+    @Test
+    @DisplayName("포인트 환불")
+    void pointRefund() {
+        //given
+        MemberEntity member = MemberEntity.builder()
+                .id(11L)
+                .email("dbdbdb@naver.com")
+                .build();
+
+        PointEntity point = PointEntity.builder()
+                .id(3L)
+                .eventType("포인트 환불")
+                .changedPoint(-4000L)
+                .currentPoint(7000L)
+                .memberEntity(member)
+                .build();
+
+        List<PointEntity> pointEntityList = Collections.singletonList(point);
+
+        Pageable pageable = PageRequest.of(0, 1);
+        Page<PointEntity> page = new PageImpl<>(pointEntityList, pageable, pointEntityList.size());
+
+        given(memberRepository.findByEmail(member.getEmail()))
+                .willReturn(Optional.of(member));
+        given(pointRepository.findByMemberEntity(member, pageable))
+                .willReturn(page);
+        given(pointRepository.save(any()))
+                .willReturn(point);
+
+        //when
+        PointChangeDto pointChangeDto = pointService.refundPoint("dbdbdb@naver.com", 2000L);
+        ArgumentCaptor<PointEntity> captor = ArgumentCaptor.forClass(PointEntity.class);
+
+        //then
+        verify(pointRepository, times(1)).save(captor.capture());
+        assertAll(
+                () -> assertEquals(-2000L, captor.getValue().getChangedPoint()),
+                () -> assertEquals(5000L, captor.getValue().getCurrentPoint()),
+                () -> assertEquals(-4000L, pointChangeDto.getChangedPoint()),
+                () -> assertEquals(7000L, pointChangeDto.getCurrentPoint()),
+                () -> assertEquals("포인트 환불", pointChangeDto.getEventType())
         );
     }
 }
