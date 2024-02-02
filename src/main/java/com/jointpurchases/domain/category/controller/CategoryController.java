@@ -30,4 +30,14 @@ public class CategoryController {
         return ResponseEntity.ok()
                 .body(categoryService.createCategory(requestDto));
     }
+
+    @PutMapping("/category/{id}")
+    @Secured("ROLE_ADMIN")
+    public ResponseEntity<?> updateCategory(
+            @PathVariable final Long id,
+            @RequestBody CategoryRequestDto requestDto)
+    {
+        return ResponseEntity.ok()
+                .body(categoryService.updateCategory(id, requestDto));
+    }
 }
