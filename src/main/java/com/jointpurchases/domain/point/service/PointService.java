@@ -1,6 +1,7 @@
 package com.jointpurchases.domain.point.service;
 
 import com.jointpurchases.domain.point.model.dto.PointChangeDto;
+import com.jointpurchases.domain.point.model.dto.GetPoint;
 import com.jointpurchases.domain.point.model.entity.MemberEntity;
 import com.jointpurchases.domain.point.model.entity.PointEntity;
 import com.jointpurchases.domain.point.repository.MemberRepository;
@@ -50,6 +51,22 @@ public class PointService {
                     .build())
             );
         }
+    }
+
+    //현재 포인트 조회
+    //이메일로 memberEntity 검색
+    public GetPoint getPoint(String email) {
+        MemberEntity memberEntity = getMemberEntity(email);
+
+        PointEntity pointEntity = getLatestPointForEntity(memberEntity);
+
+        if (pointEntity == null) {
+            throw new RuntimeException("포인트 내역이 없습니다.");
+        }
+
+        return GetPoint.builder()
+                .currentPoint(pointEntity.getCurrentPoint())
+                .build();
     }
 
 
