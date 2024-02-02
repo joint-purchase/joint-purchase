@@ -1,5 +1,6 @@
 package com.jointpurchases.domain.point.service;
 
+import com.jointpurchases.domain.point.model.dto.GetPoint;
 import com.jointpurchases.domain.point.model.dto.PointChangeDto;
 import com.jointpurchases.domain.point.model.entity.MemberEntity;
 import com.jointpurchases.domain.point.model.entity.PointEntity;
@@ -98,5 +99,38 @@ class PointServiceTest {
         );
     }
 
+    @Test
+    @DisplayName("현재 포인트 조회")
+    void getPointSuccess() {
+        //given
+        MemberEntity member = MemberEntity.builder()
+                .id(11L)
+                .email("dbdbdb@naver.com")
+                .build();
+
+        PointEntity point = PointEntity.builder()
+                .id(3L)
+                .eventType("포인트 구매")
+                .changedPoint(4000L)
+                .currentPoint(4000L)
+                .memberEntity(member)
+                .build();
+
+        List<PointEntity> pointEntityList = Collections.singletonList(point);
+
+        Pageable pageable = PageRequest.of(0, 1);
+        Page<PointEntity> page = new PageImpl<>(pointEntityList, pageable, pointEntityList.size());
+
+        given(memberRepository.findByEmail(anyString()))
+                .willReturn(Optional.ofNullable(member));
+        given(pointRepository.findByMemberEntity(member, pageable))
+                .willReturn(page);
+
+        //when
+        GetPoint getPoint = pointService.getPoint(anyString());
+
+        //then
+        assertEquals(4000L, getPoint.getCurrentPoint());
+    }
 
 }
