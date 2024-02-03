@@ -2,18 +2,19 @@ package com.jointpurchases.domain.point.model.dto;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 public class BuyPoint {
 
-    @Data
+    @Getter
     public static class Request {
         private String email;
         private Long money;
     }
 
-    @Data
+    @Getter
     @Builder
     public static class Response {
         private String email;

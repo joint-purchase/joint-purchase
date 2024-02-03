@@ -2,11 +2,12 @@ package com.jointpurchases.domain.point.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Data
+@Getter
 @AllArgsConstructor
 public class PointHistoryResponse {
     private LocalDate startDate;

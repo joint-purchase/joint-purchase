@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@RestController
+@RestController("/point")
 @RequiredArgsConstructor
 public class PointController {
     private final PointService pointService;
 
     //현금으로 포인트 구매
-    @PostMapping("/point")
+    @PostMapping
     public BuyPoint.Response buyPoint(@RequestBody BuyPoint.Request request) {
         return BuyPoint.Response.fromPointDto(
                 this.pointService.buyPoint(request.getEmail(), request.getMoney())
@@ -26,14 +26,14 @@ public class PointController {
     }
 
     //현재 포인트 조회
-    @GetMapping("/point")
+    @GetMapping
     public GetPoint getCurrentPoint(@RequestParam String email) {
         return this.pointService.getPoint(email);
     }
 
     //포인트 사용 내역 조회
     //기간을 입력하여 조회
-    @GetMapping("/point/history")
+    @GetMapping("/history")
     public PointHistoryResponse getPointHistory(
             @RequestParam
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
@@ -48,7 +48,7 @@ public class PointController {
     }
 
     //포인트 환불
-    @PostMapping("/point/refunds")
+    @PostMapping("/refunds")
     public RefundPoint.Response refundPoint(@RequestBody RefundPoint.Request request) {
         return RefundPoint.Response.fromPointDto(
                 this.pointService.refundPoint(request.getEmail(),
