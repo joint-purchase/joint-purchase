@@ -20,7 +20,15 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
 
-
+    @Transactional(readOnly = true)
+    @Override
+    public List<CategoryResponseDto> getCategoryList() {
+        return categoryRepository.findAll()
+                .stream()
+                .map(CategoryResponseDto::of)
+                .toList();
+    }
+    
     @Override
     public CategoryResponseDto createCategory(CategoryRequestDto requestDto) {
         categoryNameDuplicateCheck(requestDto.categoryName());
