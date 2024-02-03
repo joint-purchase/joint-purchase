@@ -2,6 +2,7 @@ package com.jointpurchases.domain.category.controller;
 
 import com.jointpurchases.domain.category.model.dto.CategoryRequestDto;
 import com.jointpurchases.domain.category.service.CategoryService;
+import com.jointpurchases.global.common.ServiceResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -39,5 +40,15 @@ public class CategoryController {
     {
         return ResponseEntity.ok()
                 .body(categoryService.updateCategory(id, requestDto));
+    }
+
+    @DeleteMapping("/category/{id}")
+    @Secured("ROLE_ADMIN")
+    public ResponseEntity<?> deleteCategory(
+            @PathVariable final Long id)
+    {
+        categoryService.deleteCategory(id);
+        return ResponseEntity.ok()
+                .body(ServiceResult.success("delete success!"));
     }
 }

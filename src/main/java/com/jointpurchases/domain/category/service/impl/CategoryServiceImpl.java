@@ -7,17 +7,13 @@ import com.jointpurchases.domain.category.model.entity.Category;
 import com.jointpurchases.domain.category.repository.CategoryRepository;
 import com.jointpurchases.domain.category.service.CategoryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
 import static com.jointpurchases.global.exception.ErrorCode.DUPLICATE_CATEGORY;
+import static com.jointpurchases.global.exception.ErrorCode.NOT_FOUND_CATEGORY;
 
 @Service
 @RequiredArgsConstructor
@@ -52,11 +48,23 @@ public class CategoryServiceImpl implements CategoryService {
         return CategoryResponseDto.of(category);
     }
 
+    @Override
+    public void deleteCategory(Long id) {
+        Category category = findCategoryOrElseThrow(id);
+        categoryRepository.delete(category);
+    }
+
+    private Category findCategoryOrElseThrow(Long id) {
+        return categoryRepository.findById(id)
+                .orElseThrow(()-> new CategoryException(NOT_FOUND_CATEGORY));
+    }
+
     private void categoryNameDuplicateCheck(String categoryName) {
         categoryRepository.findByCategoryName(categoryName)
                 .ifPresent(category -> {
                     throw new CategoryException(DUPLICATE_CATEGORY);
                 });
     }
+
 
 }
