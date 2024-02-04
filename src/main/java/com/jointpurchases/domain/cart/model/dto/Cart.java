@@ -3,16 +3,17 @@ package com.jointpurchases.domain.cart.model.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 
 public class Cart {
 
-    @Data
+    @Getter
     public static class Request {
         private Long productId;
         private Long amount;
     }
 
-    @Data
+    @Getter
     @Builder
     @AllArgsConstructor
     public static class Response {

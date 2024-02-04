@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@RestController("/cart")
 @RequiredArgsConstructor
 public class CartController {
     private final CartService cartService;
 
     //장바구니에 상품 추가
-    @PostMapping("/cart/products")
+    @PostMapping("/products")
     public Cart.Response addProductToCart(@RequestBody Cart.Request product,
                                           @RequestBody String email) {
         return Cart.Response.fromDto(this.cartService.addProductToCart(
@@ -23,7 +23,7 @@ public class CartController {
     }
 
     //장바구니 조회
-    @GetMapping("/cart")
+    @GetMapping
     public GetCartList getCartList(@RequestParam String email) {
         List<Cart.Response> cartList = this.cartService.getCartList(email);
 
@@ -35,7 +35,7 @@ public class CartController {
     }
 
     //장바구니 상품 수량 증가
-    @PutMapping("/cart/{cartId}/increase")
+    @PutMapping("/{cartId}/increase")
     public Cart.Response updateCartAmountIncrease(@PathVariable Long cartId,
                                                   @RequestParam String email) {
         return Cart.Response.fromDto(this.cartService
@@ -43,7 +43,7 @@ public class CartController {
     }
 
     //장바구니 상품 수량 감소
-    @PutMapping("/cart/{cartId}/decrease")
+    @PutMapping("/{cartId}/decrease")
     public Cart.Response updateCartAmountDecrease(@PathVariable Long cartId,
                                                   @RequestParam String email) {
         return Cart.Response.fromDto(this.cartService
@@ -51,7 +51,7 @@ public class CartController {
     }
 
     //장바구니 상품 삭제
-    @DeleteMapping("/cart/{cartId}")
+    @DeleteMapping("/{cartId}")
     public ResponseEntity<String> removeCartProduct(@PathVariable Long cartId,
                                                     @RequestParam String email){
         this.cartService.removeCartProduct(cartId, email);

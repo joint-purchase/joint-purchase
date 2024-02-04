@@ -1,12 +1,9 @@
 package com.jointpurchases.domain.cart.model.dto;
 
 import com.jointpurchases.domain.cart.model.entity.CartEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder

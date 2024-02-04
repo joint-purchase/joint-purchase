@@ -2,10 +2,11 @@ package com.jointpurchases.domain.cart.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 
 import java.util.List;
 
-@Data
+@Getter
 @AllArgsConstructor
 public class GetCartList {
     private Long payTotalPrice;
