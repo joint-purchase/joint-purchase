@@ -4,6 +4,7 @@ import com.jointpurchases.domain.cart.model.dto.Cart;
 import com.jointpurchases.domain.cart.model.dto.GetCartList;
 import com.jointpurchases.domain.cart.service.CartService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,6 +32,31 @@ public class CartController {
                 .mapToLong(Cart.Response::getTotalPrice).sum();
 
         return new GetCartList(payTotalPrice, cartList);
+    }
+
+    //장바구니 상품 수량 증가
+    @PutMapping("/cart/{cartId}/increase")
+    public Cart.Response updateCartAmountIncrease(@PathVariable Long cartId,
+                                                  @RequestParam String email) {
+        return Cart.Response.fromDto(this.cartService
+                .updateCartAmountIncrease(cartId, email));
+    }
+
+    //장바구니 상품 수량 감소
+    @PutMapping("/cart/{cartId}/decrease")
+    public Cart.Response updateCartAmountDecrease(@PathVariable Long cartId,
+                                                  @RequestParam String email) {
+        return Cart.Response.fromDto(this.cartService
+                .updateCartAmountDecrease(cartId, email));
+    }
+
+    //장바구니 상품 삭제
+    @DeleteMapping("/cart/{cartId}")
+    public ResponseEntity<String> removeCartProduct(@PathVariable Long cartId,
+                                                    @RequestParam String email){
+        this.cartService.removeCartProduct(cartId, email);
+
+        return ResponseEntity.ok("장바구니의 상품이 삭제되었습니다.");
     }
 
 

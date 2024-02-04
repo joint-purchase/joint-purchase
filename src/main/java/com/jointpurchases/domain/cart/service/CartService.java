@@ -5,14 +5,15 @@ import com.jointpurchases.domain.cart.model.dto.CartDto;
 import com.jointpurchases.domain.cart.model.entity.CartEntity;
 import com.jointpurchases.domain.cart.model.entity.ProductEntity;
 import com.jointpurchases.domain.cart.repository.CartRepository;
-import com.jointpurchases.domain.member.model.entity.MemberEntity;
-import com.jointpurchases.domain.member.repository.MemberRepository;
-import com.jointpurchases.domain.product.repository.ProductRepository;
+import com.jointpurchases.domain.cart.model.entity.MemberEntity;
+import com.jointpurchases.domain.cart.repository.MemberRepository;
+import com.jointpurchases.domain.cart.repository.ProductRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -55,6 +56,55 @@ public class CartService {
 
         return cartEntityList.stream().map(e -> new Cart.Response(e.getProductEntity().getProductName(),
                 e.getAmount(), e.getTotalPrice())).collect(Collectors.toList());
+    }
+
+    //장바구니 상품 수량 증가
+    @Transactional
+    public CartDto updateCartAmountIncrease(Long cartId, String email) {
+        MemberEntity memberEntity = getMemberEntity(email);
+
+        CartEntity cartEntity = this.cartRepository.findByCartId(cartId)
+                .orElseThrow(() -> new RuntimeException("잘못된 장바구니 정보 입니다."));
+
+        if (!Objects.equals(cartEntity.getMemberEntity().getEmail(), memberEntity.getEmail())) {
+            throw new RuntimeException("장바구니 사용자가 일치하지 않습니다.");
+        }
+        cartEntity.increaseAmount();
+        return CartDto.fromEntity(this.cartRepository.save(cartEntity));
+    }
+
+    //장바구니 상품 수량 감소
+    @Transactional
+    public CartDto updateCartAmountDecrease(Long cartId, String email) {
+        MemberEntity memberEntity = getMemberEntity(email);
+
+        CartEntity cartEntity = this.cartRepository.findByCartId(cartId)
+                .orElseThrow(() -> new RuntimeException("잘못된 장바구니 정보 입니다."));
+
+        if (!Objects.equals(cartEntity.getMemberEntity().getEmail(), memberEntity.getEmail())) {
+            throw new RuntimeException("장바구니 사용자가 일치하지 않습니다.");
+        }
+        cartEntity.decreaseAmount();
+
+        if (cartEntity.getAmount() < 1) {
+            throw new RuntimeException("장바구니 상품의 수량은 1보다 작을 수 없습니다");
+        }
+        return CartDto.fromEntity(this.cartRepository.save(cartEntity));
+    }
+
+    //장바구니 상품 삭제
+    @Transactional
+    public void removeCartProduct(Long cartId, String email) {
+        MemberEntity memberEntity = getMemberEntity(email);
+
+        CartEntity cartEntity = this.cartRepository.findByCartId(cartId)
+                .orElseThrow(() -> new RuntimeException("잘못된 장바구니 정보 입니다."));
+
+        if (!Objects.equals(cartEntity.getMemberEntity().getEmail(), memberEntity.getEmail())) {
+            throw new RuntimeException("장바구니 사용자가 일치하지 않습니다.");
+        }
+
+        this.cartRepository.deleteByCartId(cartId);
     }
 
     private MemberEntity getMemberEntity(String email) {

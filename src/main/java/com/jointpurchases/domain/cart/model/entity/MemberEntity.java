@@ -1,4 +1,4 @@
-package com.jointpurchases.domain.member.model.entity;
+package com.jointpurchases.domain.cart.model.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

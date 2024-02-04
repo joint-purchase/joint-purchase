@@ -1,6 +1,5 @@
 package com.jointpurchases.domain.cart.model.entity;
 
-import com.jointpurchases.domain.member.model.entity.MemberEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,5 +28,14 @@ public class CartEntity {
 
     private Long totalPrice;
 
+    public void increaseAmount() {
+        this.amount += 1;
+        this.totalPrice += productEntity.getPrice();
+    }
+
+    public void decreaseAmount() {
+        this.amount -= 1;
+        this.totalPrice -= productEntity.getPrice();
+    }
 
 }

@@ -1,6 +1,5 @@
 package com.jointpurchases.domain.cart.model.entity;
 
-import com.jointpurchases.domain.member.model.entity.MemberEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

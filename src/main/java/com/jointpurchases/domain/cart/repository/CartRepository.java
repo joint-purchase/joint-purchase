@@ -1,8 +1,7 @@
 package com.jointpurchases.domain.cart.repository;
 
 import com.jointpurchases.domain.cart.model.entity.CartEntity;
-import com.jointpurchases.domain.cart.model.entity.ProductEntity;
-import com.jointpurchases.domain.member.model.entity.MemberEntity;
+import com.jointpurchases.domain.cart.model.entity.MemberEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
