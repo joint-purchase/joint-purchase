@@ -9,10 +9,11 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Builder
-public class CheckedRegistrationDto {
+public class RequestRegistrationDto {
 
     private String username;
     private String password;
+    private String confirmPassword;
     private String email;
     private String role;
     private String address;

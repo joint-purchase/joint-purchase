@@ -1,7 +1,7 @@
 package com.jointpurchases.domain.security.contoller;
 
-import com.jointpurchases.domain.security.dto.CheckedRegistrationDto;
-import com.jointpurchases.domain.security.dto.ConfirmRegistrationDto;
+import com.jointpurchases.domain.security.dto.CheckRegistrationDto;
+import com.jointpurchases.domain.security.dto.RequestRegistrationDto;
 import com.jointpurchases.domain.security.service.RegistrationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,23 +16,22 @@ public class UserController {
     private final RegistrationService registrationService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody ConfirmRegistrationDto confirmRegistrationDto) {
-        if (!confirmRegistrationDto.getPassword().equals(confirmRegistrationDto.getConfirmPassword())) {
-            return ResponseEntity.badRequest().body("Error: Passwords do not match!");
-        }
+    public ResponseEntity<?> registerUser(@RequestBody RequestRegistrationDto requestRegistrationDto) {
 
-        // 비밀번호 일치 확인 후 사용자 생성 로직
-        CheckedRegistrationDto user
-                = CheckedRegistrationDto.builder()
-                .username(confirmRegistrationDto.getUsername())
-                .password(confirmRegistrationDto.getPassword())
-                .phone(confirmRegistrationDto.getPhone())
-                .address(confirmRegistrationDto.getAddress())
-                .email(confirmRegistrationDto.getEmail())
-                .birthday(confirmRegistrationDto.getBirthday())
-                .build();
-
-        registrationService.registerUser(user);
+        registrationService.registerUser(toCheckedRegistrationDto(requestRegistrationDto));
         return ResponseEntity.ok("User registered successfully");
+    }
+
+    // DTO 매핑
+    private static CheckRegistrationDto toCheckedRegistrationDto(RequestRegistrationDto requestRegistrationDto) {
+        return CheckRegistrationDto.builder()
+                .username(requestRegistrationDto.getUsername())
+                .password(requestRegistrationDto.getPassword())
+                .confirmPassword(requestRegistrationDto.getConfirmPassword())
+                .phone(requestRegistrationDto.getPhone())
+                .address(requestRegistrationDto.getAddress())
+                .email(requestRegistrationDto.getEmail())
+                .birthday(requestRegistrationDto.getBirthday())
+                .build();
     }
 }
