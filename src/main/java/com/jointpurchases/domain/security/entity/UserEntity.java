@@ -6,6 +6,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Getter
 @Setter
@@ -19,6 +21,10 @@ public class UserEntity {
     private Long id;
     private String username;
     private String password;
+    private String email;
+    private String address;
+    private LocalDate birthday;
+    private String phone;
     private String role;
 
 }
