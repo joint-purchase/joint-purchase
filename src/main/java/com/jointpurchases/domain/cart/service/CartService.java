@@ -3,9 +3,9 @@ package com.jointpurchases.domain.cart.service;
 import com.jointpurchases.domain.cart.model.dto.Cart;
 import com.jointpurchases.domain.cart.model.dto.CartDto;
 import com.jointpurchases.domain.cart.model.entity.CartEntity;
+import com.jointpurchases.domain.cart.model.entity.MemberEntity;
 import com.jointpurchases.domain.cart.model.entity.ProductEntity;
 import com.jointpurchases.domain.cart.repository.CartRepository;
-import com.jointpurchases.domain.cart.model.entity.MemberEntity;
 import com.jointpurchases.domain.cart.repository.MemberRepository;
 import com.jointpurchases.domain.cart.repository.ProductRepository;
 import lombok.AllArgsConstructor;
@@ -63,12 +63,10 @@ public class CartService {
     public CartDto updateCartAmountIncrease(Long cartId, String email) {
         MemberEntity memberEntity = getMemberEntity(email);
 
-        CartEntity cartEntity = this.cartRepository.findByCartId(cartId)
-                .orElseThrow(() -> new RuntimeException("잘못된 장바구니 정보 입니다."));
+        CartEntity cartEntity = getCartEntity(cartId);
 
-        if (!Objects.equals(cartEntity.getMemberEntity().getEmail(), memberEntity.getEmail())) {
-            throw new RuntimeException("장바구니 사용자가 일치하지 않습니다.");
-        }
+        userCartNameMatch(cartEntity, memberEntity);
+
         cartEntity.increaseAmount();
         return CartDto.fromEntity(this.cartRepository.save(cartEntity));
     }
@@ -78,12 +76,10 @@ public class CartService {
     public CartDto updateCartAmountDecrease(Long cartId, String email) {
         MemberEntity memberEntity = getMemberEntity(email);
 
-        CartEntity cartEntity = this.cartRepository.findByCartId(cartId)
-                .orElseThrow(() -> new RuntimeException("잘못된 장바구니 정보 입니다."));
+        CartEntity cartEntity = getCartEntity(cartId);
 
-        if (!Objects.equals(cartEntity.getMemberEntity().getEmail(), memberEntity.getEmail())) {
-            throw new RuntimeException("장바구니 사용자가 일치하지 않습니다.");
-        }
+        userCartNameMatch(cartEntity, memberEntity);
+
         cartEntity.decreaseAmount();
 
         if (cartEntity.getAmount() < 1) {
@@ -97,14 +93,23 @@ public class CartService {
     public void removeCartProduct(Long cartId, String email) {
         MemberEntity memberEntity = getMemberEntity(email);
 
-        CartEntity cartEntity = this.cartRepository.findByCartId(cartId)
-                .orElseThrow(() -> new RuntimeException("잘못된 장바구니 정보 입니다."));
+        CartEntity cartEntity = getCartEntity(cartId);
 
+        userCartNameMatch(cartEntity, memberEntity);
+
+        this.cartRepository.deleteByCartId(cartId);
+    }
+
+    private static void userCartNameMatch(CartEntity cartEntity, MemberEntity memberEntity) {
         if (!Objects.equals(cartEntity.getMemberEntity().getEmail(), memberEntity.getEmail())) {
             throw new RuntimeException("장바구니 사용자가 일치하지 않습니다.");
         }
+    }
 
-        this.cartRepository.deleteByCartId(cartId);
+    private CartEntity getCartEntity(Long cartId) {
+        CartEntity cartEntity = this.cartRepository.findByCartId(cartId)
+                .orElseThrow(() -> new RuntimeException("잘못된 장바구니 정보 입니다."));
+        return cartEntity;
     }
 
     private MemberEntity getMemberEntity(String email) {
