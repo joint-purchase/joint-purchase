@@ -22,6 +22,10 @@ public class ProductEntity {
     @JoinColumn(name = "member_id")
     private MemberEntity memberEntity;
 
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private CategoryEntity categoryEntity;
+
     private String productName;
 
     private Long price;

@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface CartRepository extends JpaRepository<CartEntity, Long> {
     List<CartEntity> findAllByMemberEntity(MemberEntity memberEntity);
 
-    boolean existsByProductId(Long productId);
+    boolean existsByProductEntityProductId(Long productId);
 
     Optional<CartEntity> findByCartId(Long cartId);
 
