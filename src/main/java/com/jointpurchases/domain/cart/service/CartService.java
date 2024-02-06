@@ -107,9 +107,8 @@ public class CartService {
     }
 
     private CartEntity getCartEntity(Long cartId) {
-        CartEntity cartEntity = this.cartRepository.findByCartId(cartId)
+        return this.cartRepository.findByCartId(cartId)
                 .orElseThrow(() -> new RuntimeException("잘못된 장바구니 정보 입니다."));
-        return cartEntity;
     }
 
     private MemberEntity getMemberEntity(String email) {
