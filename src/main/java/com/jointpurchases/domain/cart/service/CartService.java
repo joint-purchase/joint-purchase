@@ -30,7 +30,7 @@ public class CartService {
 
         ProductEntity productEntity = getProductEntity(productId);
 
-        if (this.cartRepository.existsByProductEntityProductId(productEntity.getProductId())) {
+        if (this.cartRepository.existsByProductEntity(productEntity)) {
             throw new RuntimeException("이미 장바구니에 담긴 상품 입니다.");
         }
 

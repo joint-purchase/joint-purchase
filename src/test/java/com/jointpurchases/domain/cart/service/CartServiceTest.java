@@ -106,7 +106,7 @@ class CartServiceTest {
         given(productRepository.findByProductId(13L))
                 .willReturn(Optional.of(product));
 
-        given(cartRepository.existsByProductEntityProductId(13L))
+        given(cartRepository.existsByProductEntity(product))
                 .willReturn(true); // 이미 장바구니에 있는 상품
 
         //then
