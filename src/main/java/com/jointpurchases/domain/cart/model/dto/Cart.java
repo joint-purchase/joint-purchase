@@ -11,6 +11,7 @@ public class Cart {
     public static class Request {
         private Long productId;
         private Long amount;
+        private String email;
     }
 
     @Getter

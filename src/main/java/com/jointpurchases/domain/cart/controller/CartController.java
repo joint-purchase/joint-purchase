@@ -16,10 +16,9 @@ public class CartController {
 
     //장바구니에 상품 추가
     @PostMapping("/products")
-    public Cart.Response addProductToCart(@RequestBody Cart.Request product,
-                                          @RequestBody String email) {
+    public Cart.Response addProductToCart(@RequestBody Cart.Request product) {
         return Cart.Response.fromDto(this.cartService.addProductToCart(
-                product.getProductId(), product.getAmount(), email));
+                product.getProductId(), product.getAmount(), product.getEmail()));
     }
 
     //장바구니 조회
