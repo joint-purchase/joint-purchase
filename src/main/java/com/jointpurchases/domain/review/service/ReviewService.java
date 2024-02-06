@@ -1,5 +1,6 @@
 package com.jointpurchases.domain.review.service;
 
+import com.jointpurchases.domain.review.exception.InvalidFileException;
 import com.jointpurchases.domain.review.model.dto.CreateReviewDto;
 import com.jointpurchases.domain.review.model.entity.ReviewEntity;
 import com.jointpurchases.domain.review.model.entity.ReviewImageEntity;
@@ -31,6 +32,9 @@ public class ReviewService {
     리뷰 작성
      */
     public CreateReviewDto.Response createReview(String title, String contents, int rating, List<MultipartFile> files) throws IOException {
+        if(files.size() > 5){
+            throw new InvalidFileException();
+        }
         LocalDateTime now = LocalDateTime.now();
         now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));//현재 시간
         String projectPath = System.getProperty("user.dir") + "\\image";//기본 폴더 경로

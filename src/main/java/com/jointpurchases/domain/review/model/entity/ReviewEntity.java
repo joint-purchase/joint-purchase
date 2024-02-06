@@ -1,10 +1,7 @@
 package com.jointpurchases.domain.review.model.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -22,4 +19,13 @@ public class ReviewEntity {
     private int rating;
     private LocalDateTime registerDate;
     private LocalDateTime modifiedDate;
+
+    @Builder
+    public ReviewEntity(String title, String contents, int rating, LocalDateTime registerDate, LocalDateTime modifiedDate){
+        this.title = title;
+        this.contents = contents;
+        this.rating = rating;
+        this.registerDate = registerDate;
+        this.modifiedDate = modifiedDate;
+    }
 }
