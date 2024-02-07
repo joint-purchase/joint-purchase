@@ -33,4 +33,16 @@ public class ProductController {
                 .body(ServiceResult.success("create success!"));
     }
 
+    @PutMapping("/product/{id}")
+    public ResponseEntity<?> updateProduct(
+            @PathVariable final Long id,
+            @RequestPart(value = "product") @Valid ProductRequestDto requestDto,
+            @RequestPart(value = "image") List<MultipartFile> files,
+            @AuthenticationPrincipal final UserDetailsImpl userDetails)
+    {
+        productService.updateProduct(id, requestDto,userDetails.getUser(), files);
+        return ResponseEntity.ok()
+                .body(ServiceResult.success("update success!"));
+    }
+
 }

@@ -58,6 +58,41 @@ public class ProductServiceImpl implements ProductService {
         productImageRepository.saveAll(productImages);
     }
 
+    @Transactional
+    @Override
+    public void updateProduct(Long id, ProductRequestDto requestDto, User user, List<MultipartFile> files) {
+        checkImageUploadLimit(files);
+        Category category = findCategoryOrElseThrow(requestDto.category());
+        Product product = findProductOrElseThrow(id);
+        checkUserProduct(product, user);
+
+        List<ProductImage> productImages = imageUpload(product, files);
+
+        deleteImageS3(product.getProductImages());
+        product.update(requestDto, productImages, category);
+    }
+
+    private void deleteImageS3(List<ProductImage> images) {
+        if (images.isEmpty()) return;
+
+        try {
+            images.forEach(e ->
+                    s3ImageService.deleteImage(e.getImageUrl()));
+        }catch (Exception e){
+            log.error("delete product image failed. file={}", e.getMessage(), e);
+        }
+    }
+
+    private void checkUserProduct(Product product, User user) {
+        if (!Objects.equals(product.getUser().getId(), user.getId())) {
+            throw new ProductException(NOT_PRODUCT_BY_USER);
+        }
+    }
+
+    private Product findProductOrElseThrow(Long id) {
+        return productRepository.findById(id)
+                .orElseThrow(()-> new ProductException(PRODUCT_NOT_FOUND));
+    }
 
     private List<ProductImage> imageUpload(Product product, List<MultipartFile> files) {
         List<String> imageNameList = s3ImageService.upload(files);

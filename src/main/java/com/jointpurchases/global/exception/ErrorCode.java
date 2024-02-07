@@ -17,6 +17,7 @@ public enum ErrorCode {
     FAIL_TO_UPLOAD_FILE(HttpStatus.BAD_REQUEST, "이미지 업로드에 실패했습니다."),
 
     PRODUCT_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당상품이 존재하지 않습니다."),
+    NOT_PRODUCT_BY_USER(HttpStatus.BAD_REQUEST, "회원님이 등록한 상품이 아닙니다."),
     ;
 
     private final HttpStatus statusCode;

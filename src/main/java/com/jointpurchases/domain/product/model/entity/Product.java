@@ -3,6 +3,7 @@ package com.jointpurchases.domain.product.model.entity;
 import com.jointpurchases.domain.auth.model.entity.User;
 import com.jointpurchases.domain.category.model.entity.Category;
 import com.jointpurchases.domain.product.model.dto.ProductRequestDto;
+import com.jointpurchases.domain.product.model.dto.request.ProductRequestDto;
 import com.jointpurchases.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -60,4 +61,15 @@ public class Product extends BaseEntity {
         this.category = category;
     }
 
+    public void update(ProductRequestDto requestDto, List<ProductImage> productImages, Category category) {
+        this.category = category != null ? category : this.category;
+        this.productName = requestDto.productName() != null ? requestDto.productName() : this.productName;
+        this.description = requestDto.description() != null ? requestDto.description() : this.description;
+        this.stockQuantity = requestDto.stockQuantity() >= 0 ? requestDto.stockQuantity() : this.stockQuantity;
+        this.price = requestDto.price() >= 0 ? requestDto.price() : this.price;
+        if (!productImages.isEmpty()) {
+            this.productImages.clear();
+            this.productImages.addAll(productImages);
+        }
+    }
 }

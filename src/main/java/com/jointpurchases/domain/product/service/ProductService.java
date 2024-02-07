@@ -11,4 +11,5 @@ public interface ProductService {
 
     void createProduct(ProductRequestDto requestDto, User user, List<MultipartFile> files);
 
+    void updateProduct(Long id, ProductRequestDto requestDto, User user ,List<MultipartFile> files);
 }
