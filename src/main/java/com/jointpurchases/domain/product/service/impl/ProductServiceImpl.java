@@ -72,6 +72,17 @@ public class ProductServiceImpl implements ProductService {
         product.update(requestDto, productImages, category);
     }
 
+    @Transactional
+    @Override
+    public void deleteProduct(Long id, User user) {
+        Product product = findProductOrElseThrow(id);
+        checkUserProduct(product, user);
+
+        deleteImageS3(product.getProductImages());
+        productRepository.delete(product);
+    }
+
+    
     private void deleteImageS3(List<ProductImage> images) {
         if (images.isEmpty()) return;
 

@@ -45,4 +45,13 @@ public class ProductController {
                 .body(ServiceResult.success("update success!"));
     }
 
+    @DeleteMapping("/product/{id}")
+    public ResponseEntity<?> deleteProduct(
+            @PathVariable final Long id,
+            @AuthenticationPrincipal final UserDetailsImpl userDetails)
+    {
+        productService.deleteProduct(id, userDetails.getUser());
+        return ResponseEntity.ok()
+                .body(ServiceResult.success("delete success!"));
+    }
 }
