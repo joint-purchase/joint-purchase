@@ -7,6 +7,7 @@ build/
 *.jpg
 *.jpeg
 *.png
+*.gif
 
 ### STS ###
 .apt_generated

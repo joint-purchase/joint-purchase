@@ -57,7 +57,13 @@ public class ReviewService {
 
         reviewImageRepository.saveAll(reviewImageEntityList);
 
-        CreateReviewDto.Response response = new CreateReviewDto.Response(title, contents, rating, now, fileNames);
+        CreateReviewDto.Response response = CreateReviewDto.Response.builder().
+                title(title).
+                contents(contents).
+                rating(rating).
+                registerDate(now).
+                fileNames(fileNames).
+                build();
 
         return CreateReviewDto.Response.response(response);
     }
@@ -109,7 +115,14 @@ public class ReviewService {
 
         reviewImageRepository.saveAll(reviewImageEntityList);
 
-        ModifyReviewDto.Response response = new ModifyReviewDto.Response(title, contents, rating, nowReview.getRegisterDate() ,now, fileNames);
+        ModifyReviewDto.Response response = ModifyReviewDto.Response.builder().
+                title(title).
+                contents(contents).
+                rating(rating).
+                registerDate(nowReview.getRegisterDate()).
+                modifiedDate(now).
+                fileNames(fileNames).
+                build();
 
         return ModifyReviewDto.Response.response(response);
     }
