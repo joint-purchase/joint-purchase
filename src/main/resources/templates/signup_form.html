@@ -51,6 +51,14 @@
             <input type="text" th:field="*{phone}" class="form-control">
             <p class="text-danger" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></p>
         </div>
+        <div class="mb-3">
+            <label for="role" class="form-label">회원유형</label>
+            <select id="role" th:field="*{role}" class="form-control">
+                <option value="">회원유형 선택</option>
+                <option th:each="role : ${roles}" th:value="${role.key}" th:text="${role.value}"></option>
+            </select>
+            <p class="text-danger" th:if="${#fields.hasErrors('role')}" th:errors="*{role}"></p>
+        </div>
         <button type="submit" class="btn btn-primary">회원가입</button>
     </form>
 </div>

@@ -1,13 +1,13 @@
-package com.jointpurchases.domain.security;
+package com.jointpurchases.domain.security.controller;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@Controller
 public class TestController {
 
     @GetMapping("/")
     public String hello() {
-        return "Hello!";
+        return "hello";
     }
 }

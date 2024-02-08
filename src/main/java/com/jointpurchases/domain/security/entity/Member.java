@@ -1,5 +1,6 @@
-package com.jointpurchases.domain.security;
+package com.jointpurchases.domain.security.entity;
 
+import com.jointpurchases.domain.security.MemberRole;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,4 +28,7 @@ public class Member {
     private String address;
     private LocalDate birth;
     private String phone;
+
+    @Enumerated(EnumType.STRING)
+    private MemberRole role;
 }

@@ -33,4 +33,7 @@ public class MemberCreateForm {
 
     @NotNull(message = "전화번호는 필수항목입니다.")
     private String phone;
+
+    @NotNull(message="회원 유형 선택은 필수입니다.")
+    private String role;
 }

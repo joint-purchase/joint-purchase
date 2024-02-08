@@ -1,5 +1,9 @@
-package com.jointpurchases.domain.security;
+package com.jointpurchases.domain.security.service;
 
+import com.jointpurchases.domain.security.MemberCreateForm;
+import com.jointpurchases.domain.security.repository.MemberRepository;
+import com.jointpurchases.domain.security.MemberRole;
+import com.jointpurchases.domain.security.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,11 +23,11 @@ public class MemberService {
                 .birth(memberCreateForm.getBirth())
                 .phone(memberCreateForm.getPhone())
                 .address(memberCreateForm.getAddress())
+                .role(MemberRole.valueOf(memberCreateForm.getRole()))
                 .build());
     }
 
     public boolean isUsernameAlreadyInUse(String name) {
-        // 사용자 이름으로 사용자를 찾는 로직 구현
-         return memberRepository.existsByName(name);
+        return memberRepository.existsByName(name);
     }
 }
