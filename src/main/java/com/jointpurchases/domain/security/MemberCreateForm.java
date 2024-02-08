@@ -31,6 +31,6 @@ public class MemberCreateForm {
     @NotNull(message = "생일은 필수항목입니다.")
     private LocalDate birth;
 
-    @NotEmpty(message = "전화번호는 필수항목입니다.")
+    @NotNull(message = "전화번호는 필수항목입니다.")
     private String phone;
 }

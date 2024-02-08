@@ -21,4 +21,9 @@ public class MemberService {
                 .address(memberCreateForm.getAddress())
                 .build());
     }
+
+    public boolean isUsernameAlreadyInUse(String name) {
+        // 사용자 이름으로 사용자를 찾는 로직 구현
+         return memberRepository.existsByName(name);
+    }
 }
