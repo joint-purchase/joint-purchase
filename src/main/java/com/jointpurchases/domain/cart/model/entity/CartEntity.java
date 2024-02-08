@@ -19,23 +19,5 @@ public class CartEntity {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private MemberEntity memberEntity;
-
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private ProductEntity productEntity;
-
-    private Long amount;
-
     private Long totalPrice;
-
-    public void increaseAmount() {
-        this.amount += 1;
-        this.totalPrice += productEntity.getPrice();
-    }
-
-    public void decreaseAmount() {
-        this.amount -= 1;
-        this.totalPrice -= productEntity.getPrice();
-    }
-
 }

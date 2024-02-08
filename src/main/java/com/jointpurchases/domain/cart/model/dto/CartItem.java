@@ -2,10 +2,9 @@ package com.jointpurchases.domain.cart.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 
-public class Cart {
+public class CartItem {
 
     @Getter
     public static class Request {
@@ -22,11 +21,11 @@ public class Cart {
         private Long amount;
         private Long totalPrice;
 
-        public static Response fromDto(CartDto dto) {
+        public static Response fromDto(CartItemDto dto) {
             return Response.builder()
                     .productName(dto.getProductName())
                     .amount(dto.getAmount())
-                    .totalPrice(dto.getTotalPrice())
+                    .totalPrice(dto.getProductTotalPrice())
                     .build();
         }
     }
