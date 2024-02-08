@@ -50,8 +50,8 @@ public class Product extends BaseEntity {
     private List<ProductImage> productImages;
 
     @Builder
-    public Product(String productName, String description, int price,
-                   int stockQuantity, int likeCount, User user, Category category) {
+    public Product(String productName, String description, Integer price,
+                   Integer stockQuantity, Integer likeCount, User user, Category category) {
         this.productName = productName;
         this.description = description;
         this.price = price;
@@ -71,5 +71,9 @@ public class Product extends BaseEntity {
             this.productImages.clear();
             this.productImages.addAll(productImages);
         }
+    }
+
+    public void likeCountUpdate(Integer likeCount){
+        this.likeCount = likeCount;
     }
 }

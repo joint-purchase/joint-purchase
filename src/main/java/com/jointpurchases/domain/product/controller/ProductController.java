@@ -33,6 +33,15 @@ public class ProductController {
                 .body(ServiceResult.success("create success!"));
     }
 
+    @PostMapping("/product/{productId}/like")
+    public ResponseEntity<?> likeProduct(
+            @PathVariable final Long productId,
+            @AuthenticationPrincipal final UserDetailsImpl userDetails)
+    {
+        return ResponseEntity.ok()
+                .body(productService.likeProduct(productId, userDetails.getUser().getId()));
+    }
+
     @PutMapping("/product/{id}")
     public ResponseEntity<?> updateProduct(
             @PathVariable final Long id,
