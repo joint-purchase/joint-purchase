@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Form Errors Fragment</title>
+</head>
+<body>
+
+<!-- formErrorsFragment 프래그먼트 정의 -->
+<div th:fragment="formErrorsFragment">
+  <!-- 에러가 존재하는 경우에만 div가 표시됨 -->
+  <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+    <ul>
+      <!-- 전체 필드에 대한 에러 메시지를 순회하여 표시 -->
+      <li th:each="error : ${#fields.allErrors()}" th:text="${error}"></li>
+    </ul>
+  </div>
+</div>
+
+</body>
+</html>
