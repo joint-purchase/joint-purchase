@@ -1,8 +1,8 @@
 package com.jointpurchases.domain.security.service;
 
-import com.jointpurchases.domain.security.repository.MemberRepository;
-import com.jointpurchases.domain.security.MemberRole;
-import com.jointpurchases.domain.security.entity.Member;
+import com.jointpurchases.domain.security.entity.UserEntity;
+import com.jointpurchases.domain.security.model.UserRole;
+import com.jointpurchases.domain.security.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,24 +20,24 @@ import java.util.Optional;
 @Service
 public class MemberSecurityService implements UserDetailsService {
 
-    private final MemberRepository memberRepository;
+    private final UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
-        Optional<Member> _siteMember = this.memberRepository.findByName(name);
+        Optional<UserEntity> _siteMember = this.userRepository.findByName(name);
         if (_siteMember.isEmpty()) {
             throw new UsernameNotFoundException("사용자를 찾을수 없습니다.");
         }
-        Member siteMember = _siteMember.get();
+        UserEntity siteUserEntity = _siteMember.get();
         List<GrantedAuthority> authorities = new ArrayList<>();
         // TODO 로직 순서를 바꾸는게 좋을까요?
-        if (siteMember.getRole().equals(MemberRole.ADMIN)) {
-            authorities.add(new SimpleGrantedAuthority(MemberRole.ADMIN.getValue()));
-        } else if(siteMember.getRole().equals(MemberRole.SELLER)){
-            authorities.add(new SimpleGrantedAuthority(MemberRole.SELLER.getValue()));
+        if (siteUserEntity.getRole().equals(UserRole.ADMIN)) {
+            authorities.add(new SimpleGrantedAuthority(UserRole.ADMIN.getValue()));
+        } else if(siteUserEntity.getRole().equals(UserRole.SELLER)){
+            authorities.add(new SimpleGrantedAuthority(UserRole.SELLER.getValue()));
         } else {
-            authorities.add(new SimpleGrantedAuthority(MemberRole.USER.getValue()));
+            authorities.add(new SimpleGrantedAuthority(UserRole.USER.getValue()));
         }
-        return new User(siteMember.getName(), siteMember.getPassword(), authorities);
+        return new User(siteUserEntity.getName(), siteUserEntity.getPassword(), authorities);
     }
 }

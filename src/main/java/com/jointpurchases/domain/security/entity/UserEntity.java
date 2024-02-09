@@ -1,6 +1,6 @@
 package com.jointpurchases.domain.security.entity;
 
-import com.jointpurchases.domain.security.MemberRole;
+import com.jointpurchases.domain.security.model.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Member {
+public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,5 +30,5 @@ public class Member {
     private String phone;
 
     @Enumerated(EnumType.STRING)
-    private MemberRole role;
+    private UserRole role;
 }
