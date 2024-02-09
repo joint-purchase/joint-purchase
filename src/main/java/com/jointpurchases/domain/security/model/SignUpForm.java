@@ -1,4 +1,4 @@
-package com.jointpurchases.domain.security;
+package com.jointpurchases.domain.security.model;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -10,7 +10,7 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-public class MemberCreateForm {
+public class SignUpForm {
 
     @Size(min =3, max =25)
     @NotEmpty(message = "사용자 ID는 필수항목입니다.")
