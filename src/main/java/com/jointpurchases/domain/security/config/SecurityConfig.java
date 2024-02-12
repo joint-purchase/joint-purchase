@@ -1,20 +1,26 @@
 package com.jointpurchases.domain.security.config;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+
+    private final JwtAuthFilter jwtAuthFilter;
+    private final AuthenticationProvider authenticationProvider;
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder(){
@@ -24,29 +30,21 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        // csrf disable : 개발 단계에서 비활성화
-        http
-                .csrf(AbstractHttpConfigurer::disable);
 
-        // Form login 방식 비활성화 (API 서버 형식으로 구현)
         http
-                .formLogin(AbstractHttpConfigurer::disable);
-
-        // basic 인증 방식 비활성화
-        http
-                .httpBasic(AbstractHttpConfigurer::disable);
-
-        // 경로별 인가 작업
-        http
-                .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/login", "/", "/register").permitAll()
-                        .requestMatchers("admin").hasRole("ADMIN")
-                        .anyRequest().authenticated());
-
-        // 세션 설정 - 무상태성 : JWT 는 무상태성을 전제로 한다. 가장 중요한 부분!
-        http
-                .sessionManagement((session) -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .csrf()
+                .disable()
+                .authorizeHttpRequests()
+                .requestMatchers("/api/v1/auth/**", "login","/","register") // white list - 인증 불요
+                .permitAll()
+                .anyRequest() // white list 제외 인증 필요
+                .authenticated()
+                .and()
+                .sessionManagement()// 세션관리 - jwt로 인증하기 때문에 무상태성으로 전환
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authenticationProvider(authenticationProvider)
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
