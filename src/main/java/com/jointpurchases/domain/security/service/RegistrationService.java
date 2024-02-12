@@ -1,9 +1,9 @@
 package com.jointpurchases.domain.security.service;
 
-import com.jointpurchases.domain.security.entity.UserEntity;
+import com.jointpurchases.domain.security.user.User;
 import com.jointpurchases.domain.security.model.CheckRegistrationDto;
-import com.jointpurchases.domain.security.model.UserRole;
-import com.jointpurchases.domain.security.repository.UserRepository;
+import com.jointpurchases.domain.security.user.UserRole;
+import com.jointpurchases.domain.security.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,8 +25,8 @@ public class RegistrationService {
         userRepository.save(toUserEntity(checkRegistrationDto));
     }
 
-    private UserEntity toUserEntity(CheckRegistrationDto checkRegistrationDto) {
-        return UserEntity.builder()
+    private User toUserEntity(CheckRegistrationDto checkRegistrationDto) {
+        return User.builder()
                 .name(checkRegistrationDto.getUsername())
                 .password(passwordEncoder.encode(checkRegistrationDto.getPassword()))
                 .email(checkRegistrationDto.getEmail())

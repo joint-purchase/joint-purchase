@@ -1,4 +1,4 @@
-package com.jointpurchases.domain.security.model;
+package com.jointpurchases.domain.security.user;
 
 import lombok.Getter;
 
