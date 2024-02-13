@@ -41,7 +41,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
-    public void createProduct(ProductRequestDto requestDto, User user, List<MultipartFile> files) {
+    public Long createProduct(ProductRequestDto requestDto, User user, List<MultipartFile> files) {
         Category category = findCategoryOrElseThrow(requestDto.category());
         checkImageUploadLimit(files);
 
@@ -57,6 +57,8 @@ public class ProductServiceImpl implements ProductService {
 
         List<ProductImage> productImages = imageUpload(product, files);
         productImageRepository.saveAll(productImages);
+
+        return product.getId();
     }
 
     @Override
@@ -75,7 +77,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
-    public void updateProduct(Long id, ProductRequestDto requestDto, User user, List<MultipartFile> files) {
+    public Long updateProduct(Long id, ProductRequestDto requestDto, User user, List<MultipartFile> files) {
         checkImageUploadLimit(files);
         Category category = findCategoryOrElseThrow(requestDto.category());
         Product product = findProductOrElseThrow(id);
@@ -85,16 +87,20 @@ public class ProductServiceImpl implements ProductService {
 
         deleteImageS3(product.getProductImages());
         product.update(requestDto, productImages, category);
+
+        return product.getId();
     }
 
     @Transactional
     @Override
-    public void deleteProduct(Long id, User user) {
+    public Long deleteProduct(Long id, User user) {
         Product product = findProductOrElseThrow(id);
         checkUserProduct(product, user);
 
         deleteImageS3(product.getProductImages());
         productRepository.delete(product);
+
+        return product.getId();
     }
 
 

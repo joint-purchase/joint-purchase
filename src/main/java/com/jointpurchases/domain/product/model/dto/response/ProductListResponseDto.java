@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 public record ProductListResponseDto(
         Long id,
         String productName,
-        String userName,
         Integer price,
         String categoryName,
         String imageUrl,
@@ -24,7 +23,6 @@ public record ProductListResponseDto(
                 .id(product.getId())
                 .categoryName(product.getCategory().getCategoryName())
                 .productName(product.getProductName())
-                .userName(product.getUser().getUsername())
                 .price(product.getPrice())
                 .imageUrl(product.getProductImages().stream()
                         .findFirst()
