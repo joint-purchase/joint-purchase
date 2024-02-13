@@ -40,7 +40,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
         // 토큰 추출하기
         jwt = authHeader.substring(7);
-        userEmail = jwtService.extractUsername(jwt); //todo jwt 토큰으로부터 이메일 추출
+        userEmail = jwtService.extractUsername(jwt);
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
             if (jwtService.isTokenValid(jwt, userDetails)) {
