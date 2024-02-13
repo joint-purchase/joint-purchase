@@ -1,6 +1,5 @@
 package com.jointpurchases.domain.product.service.impl;
 
-import com.jointpurchases.domain.auth.model.entity.User;
 import com.jointpurchases.domain.category.exception.CategoryException;
 import com.jointpurchases.domain.category.model.entity.Category;
 import com.jointpurchases.domain.category.repository.CategoryRepository;
@@ -9,6 +8,7 @@ import com.jointpurchases.domain.product.model.dto.request.ProductRequestDto;
 import com.jointpurchases.domain.product.model.dto.response.ProductLikeResponseDto;
 import com.jointpurchases.domain.product.model.entity.Product;
 import com.jointpurchases.domain.product.model.entity.ProductImage;
+import com.jointpurchases.domain.product.model.entity.User;
 import com.jointpurchases.domain.product.repository.ProductImageRepository;
 import com.jointpurchases.domain.product.repository.ProductRepository;
 import com.jointpurchases.domain.product.service.ProductService;
@@ -34,6 +34,7 @@ public class ProductServiceImpl implements ProductService {
     private final CategoryRepository categoryRepository;
     private final ProductImageRepository productImageRepository;
     private final S3ImageService s3ImageService;
+    private final RedisUtil redisUtil;
 
     private static final int MAXIMUM_IMAGES = 5;    // 이미지 업로드 최대 개수
 

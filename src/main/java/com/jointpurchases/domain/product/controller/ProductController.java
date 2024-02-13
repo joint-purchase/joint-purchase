@@ -1,13 +1,13 @@
 package com.jointpurchases.domain.product.controller;
 
-import com.jointpurchases.domain.auth.sercurity.UserDetailsImpl;
 import com.jointpurchases.domain.product.model.dto.request.ProductRequestDto;
+import com.jointpurchases.domain.product.model.entity.User;
 import com.jointpurchases.domain.product.service.ProductService;
 import com.jointpurchases.global.common.ServiceResult;
+import com.jointpurchases.global.tool.LoginMember;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,9 +26,9 @@ public class ProductController {
     public ResponseEntity<?> createProduct(
             @RequestPart(value = "product") @Valid ProductRequestDto requestDto,
             @RequestPart(value = "image") List<MultipartFile> files,
-            @AuthenticationPrincipal final UserDetailsImpl userDetails)
+            @LoginMember final User user)
     {
-        productService.createProduct(requestDto, userDetails.getUser(), files);
+        productService.createProduct(requestDto, user, files);
         return ResponseEntity.ok()
                 .body(ServiceResult.success("create success!"));
     }
@@ -36,10 +36,10 @@ public class ProductController {
     @PostMapping("/product/{productId}/like")
     public ResponseEntity<?> likeProduct(
             @PathVariable final Long productId,
-            @AuthenticationPrincipal final UserDetailsImpl userDetails)
+            @LoginMember final User user)
     {
         return ResponseEntity.ok()
-                .body(productService.likeProduct(productId, userDetails.getUser().getId()));
+                .body(productService.likeProduct(productId, user.getId()));
     }
 
     @PutMapping("/product/{id}")
@@ -47,9 +47,9 @@ public class ProductController {
             @PathVariable final Long id,
             @RequestPart(value = "product") @Valid ProductRequestDto requestDto,
             @RequestPart(value = "image") List<MultipartFile> files,
-            @AuthenticationPrincipal final UserDetailsImpl userDetails)
+            @LoginMember final User user)
     {
-        productService.updateProduct(id, requestDto,userDetails.getUser(), files);
+        productService.updateProduct(id, requestDto, user, files);
         return ResponseEntity.ok()
                 .body(ServiceResult.success("update success!"));
     }
@@ -57,9 +57,9 @@ public class ProductController {
     @DeleteMapping("/product/{id}")
     public ResponseEntity<?> deleteProduct(
             @PathVariable final Long id,
-            @AuthenticationPrincipal final UserDetailsImpl userDetails)
+            @LoginMember final User user)
     {
-        productService.deleteProduct(id, userDetails.getUser());
+        productService.deleteProduct(id, user);
         return ResponseEntity.ok()
                 .body(ServiceResult.success("delete success!"));
     }
