@@ -1,9 +1,10 @@
 package com.jointpurchases.domain.product.model.entity;
 
-import com.jointpurchases.domain.auth.model.entity.User;
 import com.jointpurchases.domain.category.model.entity.Category;
+
 import com.jointpurchases.domain.product.model.dto.ProductRequestDto;
 import com.jointpurchases.domain.product.model.dto.request.ProductRequestDto;
+
 import com.jointpurchases.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
