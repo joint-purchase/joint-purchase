@@ -12,9 +12,9 @@ import java.util.Optional;
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("SELECT p FROM Product p " +
-            "LEFT JOIN  p.user u " +
-            "LEFT JOIN  p.category c " +
-            "LEFT JOIN  p.productImages i " +
+            "LEFT JOIN FETCH p.user u " +
+            "LEFT JOIN FETCH p.category c " +
+            "LEFT JOIN FETCH p.productImages i " +
             "WHERE p.id = :productId")
     Optional<Product> findProductWithProductId(@Param("productId") Long productId);
 

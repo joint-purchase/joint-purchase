@@ -11,6 +11,8 @@ public interface ProductService {
 
     void createProduct(ProductRequestDto requestDto, User user, List<MultipartFile> files);
 
+    ProductLikeResponseDto likeProduct(Long productId, Long userId);
+
     void updateProduct(Long id, ProductRequestDto requestDto, User user ,List<MultipartFile> files);
 
     void deleteProduct(Long id, User user);

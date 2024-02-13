@@ -58,6 +58,20 @@ public class ProductServiceImpl implements ProductService {
         productImageRepository.saveAll(productImages);
     }
 
+    @Override
+    public ProductLikeResponseDto likeProduct(Long productId, Long userId) {
+        Product product = findProductOrElseThrow(productId);
+
+        if (Boolean.TRUE.equals(redisUtil.isLike(userId, productId))) {
+            redisUtil.unLike(userId, productId);
+        } else {
+            redisUtil.like(userId, productId);
+        }
+
+        return new ProductLikeResponseDto(
+                productId, product.getLikeCount() + redisUtil.getLikeCount(productId));
+    }
+
     @Transactional
     @Override
     public void updateProduct(Long id, ProductRequestDto requestDto, User user, List<MultipartFile> files) {
