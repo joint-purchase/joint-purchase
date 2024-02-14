@@ -14,6 +14,7 @@ public class ServiceResult {
     private int status;
     private HttpStatus statusCode;
     private String message;
+    private Long resultId;
 
     public static ServiceResult fail(ErrorCode errorCode) {
         return ServiceResult.builder()
@@ -31,4 +32,12 @@ public class ServiceResult {
                 .build();
     }
 
+    public static ServiceResult success(String message, Long id) {
+        return ServiceResult.builder()
+                .status(HttpStatus.OK.value())
+                .statusCode(HttpStatus.OK)
+                .resultId(id)
+                .message(message)
+                .build();
+    }
 }

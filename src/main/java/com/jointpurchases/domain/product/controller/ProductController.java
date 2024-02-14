@@ -28,9 +28,9 @@ public class ProductController {
             @RequestPart(value = "image") List<MultipartFile> files,
             @LoginMember final User user)
     {
-        productService.createProduct(requestDto, user, files);
         return ResponseEntity.ok()
-                .body(ServiceResult.success("create success!"));
+                .body(ServiceResult.success("create success!",
+                        productService.createProduct(requestDto, user, files)));
     }
 
     @PostMapping("/product/{productId}/like")
@@ -49,9 +49,9 @@ public class ProductController {
             @RequestPart(value = "image") List<MultipartFile> files,
             @LoginMember final User user)
     {
-        productService.updateProduct(id, requestDto, user, files);
         return ResponseEntity.ok()
-                .body(ServiceResult.success("update success!"));
+                .body(ServiceResult.success("update success!",
+                        productService.updateProduct(id, requestDto,user, files)));
     }
 
     @DeleteMapping("/product/{id}")
@@ -59,8 +59,8 @@ public class ProductController {
             @PathVariable final Long id,
             @LoginMember final User user)
     {
-        productService.deleteProduct(id, user);
         return ResponseEntity.ok()
-                .body(ServiceResult.success("delete success!"));
+                .body(ServiceResult.success("delete success!",
+                        productService.deleteProduct(id, user)));
     }
 }

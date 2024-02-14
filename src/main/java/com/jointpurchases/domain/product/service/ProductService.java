@@ -9,12 +9,12 @@ import java.util.List;
 
 public interface ProductService {
 
-    void createProduct(ProductRequestDto requestDto, User user, List<MultipartFile> files);
+    Long createProduct(ProductRequestDto requestDto, User user, List<MultipartFile> files);
 
     ProductLikeResponseDto likeProduct(Long productId, Long userId);
 
-    void updateProduct(Long id, ProductRequestDto requestDto, User user ,List<MultipartFile> files);
+    Long updateProduct(Long id, ProductRequestDto requestDto, User user ,List<MultipartFile> files);
 
-    void deleteProduct(Long id, User user);
+    Long deleteProduct(Long id, User user);
 
 }
