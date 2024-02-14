@@ -1,4 +1,4 @@
-package com.jointpurchases.review;
+package com.jointpurchases.domain.review;
 
 import com.jointpurchases.domain.review.model.entity.ReviewEntity;
 import org.assertj.core.api.Assertions;
