@@ -42,8 +42,8 @@ public class CategoryController {
     public ResponseEntity<?> deleteCategory(
             @PathVariable final Long id)
     {
-        categoryService.deleteCategory(id);
         return ResponseEntity.ok()
-                .body(ServiceResult.success("delete success!"));
+                .body(ServiceResult.success("delete success!",
+                        categoryService.deleteCategory(id)));
     }
 }
