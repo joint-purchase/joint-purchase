@@ -19,13 +19,20 @@ import java.util.function.Function;
 public class JwtService {
 
 
-    private static final String SECRET_KEY = "29a11a3c03f50ce72abc0884047fd00b22d1da9be7459956e07b511986a6971c";
+    @Value("${application.security.jwt.secret-key}")
+    private static String secretKey = "29a11a3c03f50ce72abc0884047fd00b22d1da9be7459956e07b511986a6971c";
+
+    @Value("${application.security.jwt.expiration}")
+    private static long jwtExpiration = 86400000L;
+
+    @Value("${application.security.jwt.refresh-token.expiration}")
+    private static long refreshExpiration = 604800000L;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
-    public <T> T extractClaim(String token, Function<Claims, T> claimResolver){
+    public <T> T extractClaim(String token, Function<Claims, T> claimResolver) {
         final Claims claims = extractAllClaims(token);
         return claimResolver.apply(claims);
     }
@@ -37,6 +44,20 @@ public class JwtService {
     public String generateToken(
             Map<String, Object> extraClaims,
             UserDetails userDetails
+    ) {
+        return buildToken(extraClaims, userDetails, jwtExpiration);
+    }
+
+    public String generateRefreshToken(
+            UserDetails userDetails
+    ) {
+        return buildToken(new HashMap<>(), userDetails, refreshExpiration);
+    }
+
+    private String buildToken(
+            Map<String, Object> extraClaims,
+            UserDetails userDetails,
+            long expiration
     ) {
         return Jwts.builder()
                 .setClaims(extraClaims)
@@ -69,7 +90,7 @@ public class JwtService {
     }
 
     private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }
