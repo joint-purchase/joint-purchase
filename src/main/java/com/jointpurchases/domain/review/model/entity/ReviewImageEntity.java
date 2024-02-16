@@ -21,7 +21,6 @@ public class ReviewImageEntity {
 
     @ManyToOne
     @JoinColumn(name = "REVIEW_ID")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private ReviewEntity review;
 
     @Builder
