@@ -8,10 +8,6 @@ import java.util.List;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<ReviewEntity, Long> {
-    ReviewEntity getById(long id);
 
-    void deleteById(long id);
-
-    List<ReviewEntity> getAllByProductId(long id);
-
+    List<ReviewEntity> findAllByProductId(long id);
 }

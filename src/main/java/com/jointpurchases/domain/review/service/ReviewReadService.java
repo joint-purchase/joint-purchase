@@ -20,42 +20,42 @@ public class ReviewReadService {
 리뷰 조회
  */
     public GetReviewDto.Response getOneById(long id){
-        ReviewEntity getReview = reviewRepository.getById(id);
-        List<ReviewImageEntity> getReviewImageList = reviewImageRepository.getAllByReviewId(id);
+        ReviewEntity review = reviewRepository.findById(id).get();
+        List<ReviewImageEntity> getReviewImageList = reviewImageRepository.findAllByReviewId(id);
         ArrayList<String> filePaths = new ArrayList<>();
 
-        for(int i = 0; i < getReviewImageList.size();i++){
-            filePaths.add(getReviewImageList.get(i).getFilepath());
+        for(ReviewImageEntity gerReviewImage : getReviewImageList){
+            filePaths.add(gerReviewImage.getFilepath());
         }
 
         return GetReviewDto.Response.builder().
-                title(getReview.getTitle()).
-                contents(getReview.getContents()).
-                rating(getReview.getRating()).
-                registerDate(getReview.getRegisterDate()).
-                modifiedDate(getReview.getModifiedDate()).
+                title(review.getTitle()).
+                contents(review.getContents()).
+                rating(review.getRating()).
+                registerDate(review.getRegisterDate()).
+                modifiedDate(review.getModifiedDate()).
                 filePaths(filePaths).
                 build();
     }
 
     public List<GetReviewDto.Response> getAllByProductId(long id){
         List<GetReviewDto.Response> getReviewDtoResponseList = new ArrayList<>();
-        List<ReviewEntity> getReviewList = reviewRepository.getAllByProductId(id);
+        List<ReviewEntity> getReviewList = reviewRepository.findAllByProductId(id);
 
-        for(int i = 0; i < getReviewList.size();i++){
-            List<ReviewImageEntity> getReviewImageList = reviewImageRepository.getAllByReviewId(getReviewList.get(i).getId());
+        for(ReviewEntity review : getReviewList){
+            List<ReviewImageEntity> getReviewImageList = reviewImageRepository.findAllByReviewId(review.getId());
             ArrayList<String> filePaths = new ArrayList<>();
 
-            for(int j = 0; j < getReviewImageList.size();j++){
-                filePaths.add(getReviewImageList.get(i).getFilepath());
+            for(ReviewImageEntity ReviewImage : getReviewImageList){
+                filePaths.add(ReviewImage.getFilepath());
             }
 
             GetReviewDto.Response response = GetReviewDto.Response.builder().
-                    title(getReviewList.get(i).getTitle()).
-                    contents(getReviewList.get(i).getContents()).
-                    rating(getReviewList.get(i).getRating()).
-                    registerDate(getReviewList.get(i).getRegisterDate()).
-                    modifiedDate(getReviewList.get(i).getModifiedDate()).
+                    title(review.getTitle()).
+                    contents(review.getContents()).
+                    rating(review.getRating()).
+                    registerDate(review.getRegisterDate()).
+                    modifiedDate(review.getModifiedDate()).
                     filePaths(filePaths).
                     build();
 

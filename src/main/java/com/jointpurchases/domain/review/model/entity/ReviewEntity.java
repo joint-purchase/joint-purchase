@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "REVIEW")
 public class ReviewEntity {
     @Id
@@ -18,7 +18,7 @@ public class ReviewEntity {
 
     private String title;
 
-    @Column(length = 1000, nullable = false)
+    @Column(length = 1000)
     private String contents;
 
     private int rating;
@@ -33,7 +33,7 @@ public class ReviewEntity {
     private ProductEntity product;
 
     @Builder
-    public ReviewEntity(String title, String contents, int rating, LocalDateTime registerDate, LocalDateTime modifiedDate, ProductEntity product){
+    public ReviewEntity(int id, String title, String contents, int rating, LocalDateTime registerDate, LocalDateTime modifiedDate, ProductEntity product){
         this.title = title;
         this.contents = contents;
         this.rating = rating;
@@ -41,22 +41,15 @@ public class ReviewEntity {
         this.modifiedDate = modifiedDate;
         this.product = product;
     }
-/*
-리뷰 수정을 위한 Setter구현
- */
-    public void setTitle(String title){
+
+    /*
+    리뷰 수정을 위한 메서드
+     */
+    public void updateReview(String title, String contents, int rating, LocalDateTime modifiedDate){
         this.title = title;
-    }
-
-    public void setContents(String contents){
         this.contents = contents;
-    }
-
-    public void setRating(int rating){
         this.rating = rating;
-    }
-
-    public void setModifiedDate(LocalDateTime modifiedDate){
         this.modifiedDate = modifiedDate;
     }
+
 }

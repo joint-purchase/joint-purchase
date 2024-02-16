@@ -36,10 +36,9 @@ public class ReviewService {
         ProductEntity product = productRepository.getById(productId);
         String projectPath = System.getProperty("user.dir") + "\\image\\";//기본 폴더 경로
         ArrayList<String> filePaths = new ArrayList<>();//반환할 파일 경로 목록
-        ReviewEntity newReview = new ReviewEntity();
         ArrayList<ReviewImageEntity> reviewImageEntityList = new ArrayList<ReviewImageEntity>();//저장할 파일 엔터티 목록
 
-        newReview = ReviewEntity.builder().
+        ReviewEntity newReview = ReviewEntity.builder().
                 product(product).
                 title(title).
                 contents(contents).
@@ -53,12 +52,12 @@ public class ReviewService {
             if(files.size() > MAXIMUM_IMAGE){
                 throw new InvalidFileException();
             } else {
-                for (int i = 0; i < files.size(); i++) {
+                for (MultipartFile file : files) {
                     ReviewImageEntity newReviewImage = new ReviewImageEntity();
                     UUID uuid = UUID.randomUUID();//파일 이름 랜덤생성
-                    String filename = uuid + "-" + files.get(i).getOriginalFilename();
+                    String filename = uuid + "-" + file.getOriginalFilename();
                     File saveFile = new File(projectPath, filename);
-                    files.get(i).transferTo(saveFile);
+                    file.transferTo(saveFile);
 
                     newReviewImage = ReviewImageEntity.builder().
                             filename(filename).
@@ -90,25 +89,22 @@ public class ReviewService {
 리뷰 수정
  */
     public ModifyReviewDto.Response modifyReview(long id, String title, String contents, int rating, @Nullable List<MultipartFile> files) throws IOException {
-        ReviewEntity nowReview = reviewRepository.getById(id);
-        List<ReviewImageEntity> nowReviewImageList = reviewImageRepository.getAllByReviewId(id);
+        ReviewEntity nowReview = reviewRepository.findById(id).get();
+        List<ReviewImageEntity> nowReviewImageList = reviewImageRepository.findAllByReviewId(id);
         LocalDateTime now = LocalDateTime.now();
         String projectPath = System.getProperty("user.dir") + "\\image\\";//기본 폴더 경로
         ArrayList<String> filePaths = new ArrayList<>();//반환할 파일 이름 목록
         ArrayList<ReviewImageEntity> reviewImageEntityList = new ArrayList<>();//저장할 파일 엔터티 목록
 
-        nowReview.setTitle(title);
-        nowReview.setContents(contents);
-        nowReview.setRating(rating);
-        nowReview.setModifiedDate(now);
+        nowReview.updateReview(title, contents,rating,now);
 
         reviewRepository.save(nowReview);
 
-        for(int i = 0; i < nowReviewImageList.size();i++){
-            File deleteFile = new File(nowReviewImageList.get(i).getFilepath());
+        for(ReviewImageEntity reviewImage : nowReviewImageList){
+            File deleteFile = new File(reviewImage.getFilepath());
             if(deleteFile.exists()){
                 deleteFile.delete();
-                reviewImageRepository.deleteById(nowReviewImageList.get(i).getId());
+                reviewImageRepository.deleteById(reviewImage.getId());
             } else {
                 throw new RuntimeException("파일이 존재 하지 않습니다.");
             }
@@ -118,14 +114,13 @@ public class ReviewService {
             if(files.size() > MAXIMUM_IMAGE){
                 throw new InvalidFileException();
             } else {
-                for (int i = 0; i < files.size(); i++) {
-                    ReviewImageEntity newReviewImage = new ReviewImageEntity();
+                for (MultipartFile file : files) {
                     UUID uuid = UUID.randomUUID();//파일 이름 랜덤생성
-                    String filename = uuid + "-" + files.get(i).getOriginalFilename();
+                    String filename = uuid + "-" + file.getOriginalFilename();
                     File saveFile = new File(projectPath, filename);
-                    files.get(i).transferTo(saveFile);
+                    file.transferTo(saveFile);
 
-                    newReviewImage = ReviewImageEntity.builder().
+                    ReviewImageEntity newReviewImage = ReviewImageEntity.builder().
                             filename(filename).
                             filepath(projectPath + filename).
                             uploadDate(now).
@@ -154,13 +149,13 @@ public class ReviewService {
 리뷰 삭제
  */
     public long deleteById(long id){
-        List<ReviewImageEntity> nowReviewImageList = reviewImageRepository.getAllByReviewId(id);
+        List<ReviewImageEntity> nowReviewImageList = reviewImageRepository.findAllByReviewId(id);
 
-        for(int i = 0; i < nowReviewImageList.size();i++){
-            File deleteFile = new File(nowReviewImageList.get(i).getFilepath());
+        for(ReviewImageEntity ReviewImage : nowReviewImageList){
+            File deleteFile = new File(ReviewImage.getFilepath());
             if(deleteFile.exists()){
                 deleteFile.delete();
-                reviewImageRepository.deleteById(nowReviewImageList.get(i).getId());
+                reviewImageRepository.deleteById(ReviewImage.getId());
             } else {
                 throw new RuntimeException("파일이 존재 하지 않습니다.");
             }

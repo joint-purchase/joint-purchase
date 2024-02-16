@@ -11,9 +11,5 @@ import lombok.NoArgsConstructor;
 public class ProductEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
-
-    public ProductEntity(long id){
-        this.id = id;
-    }
+    private long id;
 }
