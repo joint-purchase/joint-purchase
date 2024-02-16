@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,13 +34,21 @@ public class S3ImageService {
         metadata.setContentLength(multipartFile.getSize());
 
         String fileName = generateFileName(multipartFile);
-        String fileUrl= "https://" + bucket + ".s3.ap-northeast-2.amazonaws.com/" +fileName;
 
         try {
+
             amazonS3Client.putObject(bucket, fileName, multipartFile.getInputStream(), metadata);
-            return fileUrl;
+            String encodedFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8);
+
+            return new StringBuilder()
+                    .append("https://")
+                    .append(bucket)
+                    .append(".s3.ap-northeast-2.amazonaws.com/")
+                    .append(encodedFileName)
+                    .toString();
+
         } catch (IOException e) {
-           throw new ImageFailToUploadException(INTERNAL_SERVER_ERROR);
+            throw new ImageFailToUploadException(INTERNAL_SERVER_ERROR);
         }
     }
 
