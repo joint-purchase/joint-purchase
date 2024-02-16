@@ -29,7 +29,6 @@ public class ReviewEntity {
 
     @ManyToOne
     @JoinColumn(name = "PRODUCT_ID")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private ProductEntity product;
 
     @Builder

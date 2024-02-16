@@ -23,16 +23,16 @@ public class ReviewController {
 dto 구성 : 상품ID(id), 제목(title), 내용(contents), 별점(rating) ,사진 파일(multipartfile)
  */
     @PostMapping
-    public CreateReviewDto.Response createReview(@RequestPart(value = "dto", required = false) CreateReviewDto.Request request) throws IOException {
-       return reviewService.createReview(request.getProductId(), request.getTitle(), request.getContents(), request.getRating(), request.getFiles());
+    public CreateReviewDto.Response createReview(@RequestPart(value = "dto") CreateReviewDto.Request request, @RequestPart(value = "files", required = false) List<MultipartFile> files) throws IOException {
+       return reviewService.createReview(request.getProductId(), request.getTitle(), request.getContents(), request.getRating(), files);
     }
 /*
 리뷰 수정
 dto 구성 : 리뷰ID(id), 제목(title), 내용(contents), 별점(rating),사진 파일(multipartfile)
  */
     @PutMapping
-    public ModifyReviewDto.Response modifyReview(@RequestPart(value = "dto", required = false) ModifyReviewDto.Request request) throws IOException {
-        return reviewService.modifyReview(request.getId(), request.getTitle(), request.getContents(), request.getRating(), request.getFiles());
+    public ModifyReviewDto.Response modifyReview(@RequestPart(value = "dto", required = false) ModifyReviewDto.Request request, @RequestPart(value = "files", required = false) List<MultipartFile> files) throws IOException {
+        return reviewService.modifyReview(request.getId(), request.getTitle(), request.getContents(), request.getRating(), files);
     }
 /*
 리뷰 삭제

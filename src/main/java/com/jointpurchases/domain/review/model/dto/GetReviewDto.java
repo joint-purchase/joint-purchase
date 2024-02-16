@@ -9,10 +9,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class GetReviewDto {
-    @Getter
-    public static class Request {
-        private int id;
-    }
     /*
     리뷰 작성 반환값
      */

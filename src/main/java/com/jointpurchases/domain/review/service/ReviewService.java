@@ -159,6 +159,7 @@ public class ReviewService {
             } else {
                 throw new RuntimeException("파일이 존재 하지 않습니다.");
             }
+            reviewRepository.deleteById(ReviewImage.getId());
         }
 
         reviewRepository.deleteById(id);

@@ -22,7 +22,6 @@ public class CreateReviewDto {
         private String title;
         private String contents;
         private int rating;
-        private List<MultipartFile> files;
     }
     /*
     리뷰 작성 반환값
