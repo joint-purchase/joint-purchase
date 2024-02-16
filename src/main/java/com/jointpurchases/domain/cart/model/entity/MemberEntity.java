@@ -9,6 +9,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Entity(name = "member")
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,4 +23,12 @@ public class MemberEntity {
     private Long id;
 
     private String email;
+    private String name;
+    private String password;
+    private String address;
+
+    private LocalDate birth;
+
+    private String phone;
+    private String role;
 }
