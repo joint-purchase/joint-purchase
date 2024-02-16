@@ -12,7 +12,7 @@ import com.jointpurchases.domain.product.model.entity.User;
 import com.jointpurchases.domain.product.repository.ProductImageRepository;
 import com.jointpurchases.domain.product.repository.ProductRepository;
 import com.jointpurchases.domain.product.service.ProductService;
-import com.jointpurchases.domain.product.service.S3ImageService;
+import com.jointpurchases.global.util.S3ImageUtil;
 import com.jointpurchases.global.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +33,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ProductImageRepository productImageRepository;
-    private final S3ImageService s3ImageService;
+    private final S3ImageUtil s3ImageService;
     private final RedisUtil redisUtil;
 
     private static final int MAXIMUM_IMAGES = 5;    // 이미지 업로드 최대 개수
