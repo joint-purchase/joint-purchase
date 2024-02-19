@@ -24,7 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AuthenticationService {
 
-    private final UserRepository repository;
+
     private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -51,7 +51,7 @@ public class AuthenticationService {
                 .phone(request.getPhone())
                 .role(Role.USER)
                 .build();
-        User savedUser = repository.save(user);
+        User savedUser = userRepository.save(user);
         String jwtToken = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
         saveUserToken(savedUser, jwtToken);
@@ -69,7 +69,7 @@ public class AuthenticationService {
                 )
         );
 
-        User user = repository.findByEmail(request.getEmail())
+        User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow();
         String jwtToken = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
@@ -113,12 +113,14 @@ public class AuthenticationService {
             return;
         }
         // 토큰 추출하기
-        refreshToken = authHeader.substring(7);
+
+        int lengthOfHeader = 6;
+        refreshToken = authHeader.substring(lengthOfHeader);
 
         userEmail = jwtService.extractUsername(refreshToken);
 
         if (userEmail != null) {
-            var user = this.repository.findByEmail(userEmail).orElseThrow();
+            var user = this.userRepository.findByEmail(userEmail).orElseThrow();
 
 
             if (jwtService.isTokenValid(refreshToken, user)) {

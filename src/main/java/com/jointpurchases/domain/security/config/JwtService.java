@@ -20,13 +20,13 @@ public class JwtService {
 
 
     @Value("${application.security.jwt.secret-key}")
-    private static String secretKey = "29a11a3c03f50ce72abc0884047fd00b22d1da9be7459956e07b511986a6971c";
+    private static String secretKey;
 
     @Value("${application.security.jwt.expiration}")
-    private static long jwtExpiration = 86400000L;
+    private static long jwtExpiration;
 
     @Value("${application.security.jwt.refresh-token.expiration}")
-    private static long refreshExpiration = 604800000L;
+    private static long refreshExpiration;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
