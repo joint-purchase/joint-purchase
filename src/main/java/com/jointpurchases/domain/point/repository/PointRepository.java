@@ -1,6 +1,6 @@
 package com.jointpurchases.domain.point.repository;
 
-import com.jointpurchases.domain.point.model.entity.MemberEntity;
+import com.jointpurchases.domain.cart.model.entity.MemberEntity;
 import com.jointpurchases.domain.point.model.entity.PointEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

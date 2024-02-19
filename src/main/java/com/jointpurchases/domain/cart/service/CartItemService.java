@@ -1,5 +1,6 @@
 package com.jointpurchases.domain.cart.service;
 
+import com.jointpurchases.domain.cart.exception.CartException;
 import com.jointpurchases.domain.cart.model.dto.CartItem;
 import com.jointpurchases.domain.cart.model.dto.CartItemDto;
 import com.jointpurchases.domain.cart.model.entity.CartEntity;
@@ -18,6 +19,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static com.jointpurchases.global.exception.ErrorCode.*;
+
 @Service
 @RequiredArgsConstructor
 public class CartItemService {
@@ -26,6 +29,7 @@ public class CartItemService {
     private final ProductRepository productRepository;
     private final MemberRepository memberRepository;
 
+    //상품 담기
     @Transactional
     public CartItemDto addProductToCart(Long productId, Long amount, String email) {
         MemberEntity memberEntity = getMemberEntity(email);
@@ -35,7 +39,7 @@ public class CartItemService {
         CartEntity cartEntity = getCartEntity(memberEntity);
 
         if (this.cartItemRepository.existsByCartEntityAndProductEntity(cartEntity, productEntity)) {
-            throw new RuntimeException("이미 장바구니에 담긴 상품 입니다.");
+            throw new CartException(ALREADY_EXISTS_PRODUCT_IN_CART);
         }
 
         return CartItemDto.fromEntity(this.cartItemRepository.save(CartItemEntity.builder()
@@ -56,7 +60,7 @@ public class CartItemService {
                 this.cartItemRepository.findAllByCartEntity(cartEntity);
 
         if (cartItemEntityList.isEmpty()) {
-            throw new RuntimeException("장바구니에 담은 상품이 없습니다.");
+            throw new CartException(NOT_EXISTS_PRODUCT_IN_CART);
         }
 
         return cartItemEntityList.stream().map(e -> new CartItem.Response(e.getProductEntity().getProductName(),
@@ -75,10 +79,10 @@ public class CartItemService {
         CartItemEntity cartItemEntity =
                 this.cartItemRepository.findByCartEntityAndProductEntity(
                                 cartEntity, productEntity)
-                        .orElseThrow(() -> new RuntimeException("사용자의 장바구니에 해당 상품이 없습니다."));
+                        .orElseThrow(() -> new CartException(NOT_EXISTS_PRODUCT_IN_CART));
 
         if (Objects.equals(cartItemEntity.getAmount(), productEntity.getAmount())) {
-            throw new RuntimeException("상품의 남은 수량을 초과합니다.");
+            throw new CartException(DO_NOT_CHANGE_THE_QUANTITY_EXCEEDING_THE_STOCK);
         }
 
         cartItemEntity.increaseAmount();
@@ -97,10 +101,10 @@ public class CartItemService {
         CartItemEntity cartItemEntity =
                 this.cartItemRepository.findByCartEntityAndProductEntity(
                                 cartEntity, productEntity)
-                        .orElseThrow(() -> new RuntimeException("사용자의 장바구니에 해당 상품이 없습니다."));
+                        .orElseThrow(() -> new CartException(NOT_EXISTS_PRODUCT_IN_CART));
 
         if (cartItemEntity.getAmount() < 1) {
-            throw new RuntimeException("장바구니 상품의 수량은 1보다 작을 수 없습니다");
+            throw new CartException(PRODUCT_CANNOT_BE_LESS_THAN_ONE);
         }
         cartItemEntity.decreaseAmount();
 
@@ -119,23 +123,23 @@ public class CartItemService {
         CartItemEntity cartItemEntity =
                 this.cartItemRepository.findByCartEntityAndProductEntity(
                                 cartEntity, productEntity)
-                        .orElseThrow(() -> new RuntimeException("사용자의 장바구니에 해당 상품이 없습니다."));
+                        .orElseThrow(() -> new CartException(NOT_EXISTS_PRODUCT_IN_CART));
 
         this.cartItemRepository.delete(cartItemEntity);
     }
 
     private CartEntity getCartEntity(MemberEntity memberEntity) {
         return cartRepository.findByMemberEntity(memberEntity)
-                .orElseThrow(() -> new RuntimeException("장바구니가 존재하지 않습니다."));
+                .orElseThrow(() -> new CartException(NOT_EXISTS_USER_CART));
     }
 
     private MemberEntity getMemberEntity(String email) {
         return this.memberRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 아이디 입니다"));
+                .orElseThrow(() -> new CartException(NOT_EXISTS_USERID));
     }
 
     private ProductEntity getProductEntity(Long productId) {
         return this.productRepository.findByProductId(productId)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 상품 입니다"));
+                .orElseThrow(() -> new CartException(NOT_EXISTS_PRODUCT));
     }
 }

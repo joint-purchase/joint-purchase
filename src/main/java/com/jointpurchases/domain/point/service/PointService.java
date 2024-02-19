@@ -1,11 +1,12 @@
 package com.jointpurchases.domain.point.service;
 
+import com.jointpurchases.domain.cart.repository.MemberRepository;
+import com.jointpurchases.domain.point.exception.PointException;
 import com.jointpurchases.domain.point.model.dto.GetPoint;
 import com.jointpurchases.domain.point.model.dto.PointChangeDto;
 import com.jointpurchases.domain.point.model.dto.PointHistory;
-import com.jointpurchases.domain.point.model.entity.MemberEntity;
+import com.jointpurchases.domain.cart.model.entity.MemberEntity;
 import com.jointpurchases.domain.point.model.entity.PointEntity;
-import com.jointpurchases.domain.point.repository.MemberRepository;
 import com.jointpurchases.domain.point.repository.PointRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.jointpurchases.global.exception.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -63,7 +66,7 @@ public class PointService {
         PointEntity pointEntity = getLatestPointForEntity(memberEntity);
 
         if (pointEntity == null) {
-            throw new RuntimeException("포인트 내역이 없습니다.");
+            throw new PointException(NO_POINT_USING_HISTORY);
         }
 
         return GetPoint.builder()
@@ -79,6 +82,10 @@ public class PointService {
         List<PointEntity> pointEntityList =
                 this.pointRepository.findAllByMemberEntityAndCreatedDateBetween(
                         memberEntity, startDateTime, endDateTime);
+
+        if(pointEntityList.isEmpty()){
+            throw new PointException(NO_POINT_USING_HISTORY);
+        }
 
         return pointEntityList.stream()
                 .map(e -> new PointHistory(e.getId(), e.getChangedPoint(),
@@ -96,7 +103,7 @@ public class PointService {
         PointEntity pointEntity = getLatestPointForEntity(memberEntity);
 
         if (pointEntity == null || pointEntity.getCurrentPoint() < refundPoint) {
-            throw new RuntimeException("환불할 포인트 잔액이 부족합니다.");
+            throw new PointException(NOT_ENOUGH_POINT_BALANCE);
         } else {
             Long currentPoint = pointEntity.getCurrentPoint() - refundPoint;
 
@@ -125,6 +132,6 @@ public class PointService {
 
     private MemberEntity getMemberEntity(String email) {
         return this.memberRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 아이디 입니다"));
+                .orElseThrow(() -> new PointException(NOT_EXISTS_USERID));
     }
 }

@@ -16,15 +16,13 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping("/category")
-    public ResponseEntity<?> getCategoryList(){
         return ResponseEntity.ok()
                 .body(categoryService.getCategoryList());
     }
 
     @PostMapping("/category")
     public ResponseEntity<?> createCategory(
-            @RequestBody CategoryRequestDto requestDto)
-    {
+            @RequestBody CategoryRequestDto requestDto) {
         return ResponseEntity.ok()
                 .body(categoryService.createCategory(requestDto));
     }
@@ -32,16 +30,14 @@ public class CategoryController {
     @PutMapping("/category/{id}")
     public ResponseEntity<?> updateCategory(
             @PathVariable final Long id,
-            @RequestBody CategoryRequestDto requestDto)
-    {
+            @RequestBody CategoryRequestDto requestDto) {
         return ResponseEntity.ok()
                 .body(categoryService.updateCategory(id, requestDto));
     }
 
     @DeleteMapping("/category/{id}")
     public ResponseEntity<?> deleteCategory(
-            @PathVariable final Long id)
-    {
+            @PathVariable final Long id){
         return ResponseEntity.ok()
                 .body(ServiceResult.success("delete success!",
                         categoryService.deleteCategory(id)));
