@@ -5,6 +5,7 @@ import com.jointpurchases.domain.cart.exception.CartException;
 import com.jointpurchases.domain.category.exception.CategoryException;
 import com.jointpurchases.domain.point.exception.PointException;
 import com.jointpurchases.domain.product.exception.ImageFailToUploadException;
+import com.jointpurchases.domain.product.exception.ProductException;
 import com.jointpurchases.global.common.ServiceResult;
 import com.jointpurchases.global.exception.ErrorResponse;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +21,14 @@ public class CustomExceptionHandler {
                 .body(ServiceResult.fail(e.getErrorCode()));
     }
 
+    @ExceptionHandler(ProductException.class)
+    public ResponseEntity<?> ProductExceptionHandler(ProductException e){
+        return ResponseEntity.status(e.getErrorCode().getStatusCode())
+                .body(ServiceResult.fail(e.getErrorCode()));
+    }
+
     @ExceptionHandler(CategoryException.class)
-    public ResponseEntity<?> postExceptionHandler(CategoryException e) {
+    public ResponseEntity<?> CategoryExceptionHandler(CategoryException e){
         return ResponseEntity.status(e.getErrorCode().getStatusCode())
                 .body(ServiceResult.fail(e.getErrorCode()));
     }

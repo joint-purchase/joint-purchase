@@ -31,6 +31,10 @@ public enum ErrorCode {
     NO_POINT_USING_HISTORY(HttpStatus.NOT_FOUND, "포인트 사용 내역이 없습니다."),
     NOT_ENOUGH_POINT_BALANCE(HttpStatus.BAD_REQUEST, "포인트 잔액이 부족합니다.");
 
+    PRODUCT_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당상품이 존재하지 않습니다."),
+    NOT_PRODUCT_BY_USER(HttpStatus.BAD_REQUEST, "회원님이 등록한 상품이 아닙니다."),
+    ;
+
     private final HttpStatus statusCode;
     private final String message;
 }

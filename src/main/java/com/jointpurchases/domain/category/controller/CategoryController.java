@@ -10,13 +10,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/admin")
+@RequestMapping("/api")
 public class CategoryController {
 
     private final CategoryService categoryService;
 
     @GetMapping("/category")
-    public ResponseEntity<?> getCategoryList() {
         return ResponseEntity.ok()
                 .body(categoryService.getCategoryList());
     }
@@ -38,9 +37,9 @@ public class CategoryController {
 
     @DeleteMapping("/category/{id}")
     public ResponseEntity<?> deleteCategory(
-            @PathVariable final Long id) {
-        categoryService.deleteCategory(id);
+            @PathVariable final Long id){
         return ResponseEntity.ok()
-                .body(ServiceResult.success("delete success!"));
+                .body(ServiceResult.success("delete success!",
+                        categoryService.deleteCategory(id)));
     }
 }
