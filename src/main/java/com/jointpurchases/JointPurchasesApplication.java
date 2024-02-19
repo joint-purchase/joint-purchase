@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class JointPurchasesApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(JointPurchasesApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(JointPurchasesApplication.class, args);
+    }
 
 }
