@@ -1,5 +1,6 @@
 package com.jointpurchases.domain.cart.service;
 
+import com.jointpurchases.domain.cart.exception.CartException;
 import com.jointpurchases.domain.cart.model.dto.CartItem;
 import com.jointpurchases.domain.cart.model.dto.CartItemDto;
 import com.jointpurchases.domain.cart.model.entity.CartEntity;
@@ -22,6 +23,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static com.jointpurchases.global.exception.ErrorCode.ALREADY_EXISTS_PRODUCT_IN_CART;
+import static com.jointpurchases.global.exception.ErrorCode.NOT_EXISTS_PRODUCT_IN_CART;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.argThat;
@@ -65,7 +68,7 @@ class CartItemServiceTest {
         CartEntity cart = CartEntity.builder()
                 .cartId(5L)
                 .memberEntity(member)
-                .totalPrice(13000L)
+                .totalPrice(5000L)
                 .build();
 
         CartItemEntity cartItem = CartItemEntity.builder()
@@ -73,7 +76,7 @@ class CartItemServiceTest {
                 .cartEntity(cart)
                 .productEntity(product)
                 .amount(5L)
-                .productTotalPrice(product.getPrice() * 5)
+                .productTotalPrice(5000L)
                 .build();
 
         given(memberRepository.findByEmail("dbdbdb@naver.com"))
@@ -90,7 +93,7 @@ class CartItemServiceTest {
                 .willReturn(cartItem);
 
         //when
-        CartItemDto cartItemDto = cartItemService.addProductToCart(13L, 10L, "dbdbdb@naver.com");
+        CartItemDto cartItemDto = cartItemService.addProductToCart(13L, 5L, "dbdbdb@naver.com");
 
         //then
         assertEquals("김", cartItemDto.getProductName());
@@ -134,11 +137,11 @@ class CartItemServiceTest {
                 .willReturn(true); // 이미 장바구니에 있는 상품
 
         //when
-        RuntimeException exception = assertThrows(RuntimeException.class, () ->
+        CartException exception = assertThrows(CartException.class, () ->
                 cartItemService.addProductToCart(13L, 10L, "dbdbdb@naver.com"));
 
         //then
-        assertEquals("이미 장바구니에 담긴 상품 입니다.", exception.getMessage());
+        assertEquals(ALREADY_EXISTS_PRODUCT_IN_CART, exception.getErrorCode());
     }
 
     @Test
@@ -215,17 +218,17 @@ class CartItemServiceTest {
                 .willReturn(new ArrayList<>());
 
         //when
-        RuntimeException exception =
-                assertThrows(RuntimeException.class,
+        CartException exception =
+                assertThrows(CartException.class,
                         () -> cartItemService.getCartItemList("dbdbdb@naver.com"));
 
         //then
-        assertEquals("장바구니에 담은 상품이 없습니다.", exception.getMessage());
+        assertEquals(NOT_EXISTS_PRODUCT_IN_CART, exception.getErrorCode());
     }
 
     @Test
     @DisplayName("장바구니 상품 수량 증가")
-    void updateCartAmountIncrease() {
+    void updateCartItemAmountIncrease() {
         //given
         MemberEntity member = MemberEntity.builder()
                 .id(11L)
@@ -244,7 +247,7 @@ class CartItemServiceTest {
         CartEntity cart = CartEntity.builder()
                 .cartId(5L)
                 .memberEntity(member)
-                .totalPrice(13000L)
+                .totalPrice(5000L)
                 .build();
 
         CartItemEntity cartItem = CartItemEntity.builder()
@@ -252,42 +255,45 @@ class CartItemServiceTest {
                 .cartEntity(cart)
                 .productEntity(product)
                 .amount(5L)
-                .productTotalPrice(product.getPrice() * 5)
+                .productTotalPrice(5000L)
                 .build();
 
-        CartEntity increaseCart = CartEntity.builder()
-                .cartId(3L)
-                .totalPrice(11000L)
+        CartItemEntity increaseCartItem = CartItemEntity.builder()
+                .cartItemId(3L)
+                .cartEntity(cart)
                 .productEntity(product)
-                .memberEntity(member)
-                .amount(11L)
+                .amount(6L)
+                .productTotalPrice(6000L)
                 .build();
 
         given(memberRepository.findByEmail("dbdbdb@naver.com"))
                 .willReturn(Optional.of(member));
+        given(cartRepository.findByMemberEntity(member))
+                .willReturn(Optional.of(cart));
+        given(productRepository.findByProductId(product.getProductId()))
+                .willReturn(Optional.of(product));
+        given(cartItemRepository.findByCartEntityAndProductEntity(cart, product))
+                .willReturn(Optional.ofNullable(cartItem));
 
-        given(cartRepository.findByCartId(3L))
-                .willReturn(Optional.ofNullable(cart));
-
-        given(cartRepository.save(argThat(carted ->
+        given(cartItemRepository.save(argThat(carted ->
                 carted.getProductEntity().equals(product) &&
-                        carted.getMemberEntity().equals(member) &&
-                        carted.getAmount().equals(11L) &&
-                        carted.getTotalPrice().equals(11000L))))
-                .willReturn(increaseCart);
+                        carted.getCartEntity().equals(cart) &&
+                        carted.getAmount().equals(6L) &&
+                        carted.getProductTotalPrice().equals(6000L))))
+                .willReturn(increaseCartItem);
 
         //when
         CartItemDto cartDto =
-                cartService.updateCartAmountIncrease(3L, "dbdbdb@naver.com");
+                cartItemService.updateCartItemAmountIncrease(13L, "dbdbdb@naver.com");
 
         //then
-        assertEquals(11000L, cartDto.getProductTotalPrice());
-        assertEquals(11L, cartDto.getAmount());
+        assertEquals(6000L, cartDto.getProductTotalPrice());
+        assertEquals(6L, cartDto.getAmount());
     }
 
     @Test
     @DisplayName("장바구니 상품 수량 감소")
-    void updateCartAmountDecrease() {
+    void updateCartItemAmountDecrease() {
         //given
         MemberEntity member = MemberEntity.builder()
                 .id(11L)
@@ -300,70 +306,96 @@ class CartItemServiceTest {
                 .price(1000L)
                 .explanation("맛있는 김입니다")
                 .memberEntity(member)
-                .amount(11L)
-                .build();
-
-        CartEntity cart = CartEntity.builder()
-                .cartId(3L)
-                .totalPrice(10000L)
-                .productEntity(product)
-                .memberEntity(member)
                 .amount(10L)
                 .build();
 
-        CartEntity decreaseCart = CartEntity.builder()
-                .cartId(3L)
-                .totalPrice(9000L)
-                .productEntity(product)
+        CartEntity cart = CartEntity.builder()
+                .cartId(5L)
                 .memberEntity(member)
-                .amount(9L)
+                .totalPrice(5000L)
+                .build();
+
+        CartItemEntity cartItem = CartItemEntity.builder()
+                .cartItemId(3L)
+                .cartEntity(cart)
+                .productEntity(product)
+                .amount(5L)
+                .productTotalPrice(product.getPrice() * 5)
+                .build();
+
+        CartItemEntity increaseCartItem = CartItemEntity.builder()
+                .cartItemId(3L)
+                .cartEntity(cart)
+                .productEntity(product)
+                .amount(4L)
+                .productTotalPrice(product.getPrice() * 4)
                 .build();
 
         given(memberRepository.findByEmail("dbdbdb@naver.com"))
                 .willReturn(Optional.of(member));
+        given(cartRepository.findByMemberEntity(member))
+                .willReturn(Optional.of(cart));
+        given(productRepository.findByProductId(product.getProductId()))
+                .willReturn(Optional.of(product));
+        given(cartItemRepository.findByCartEntityAndProductEntity(cart, product))
+                .willReturn(Optional.ofNullable(cartItem));
 
-        given(cartRepository.findByCartId(3L))
-                .willReturn(Optional.ofNullable(cart));
-
-        given(cartRepository.save(argThat(carted ->
+        given(cartItemRepository.save(argThat(carted ->
                 carted.getProductEntity().equals(product) &&
-                        carted.getMemberEntity().equals(member) &&
-                        carted.getAmount().equals(9L) &&
-                        carted.getTotalPrice().equals(9000L))))
-                .willReturn(decreaseCart);
+                        carted.getCartEntity().equals(cart) &&
+                        carted.getAmount().equals(4L) &&
+                        carted.getProductTotalPrice().equals(4000L))))
+                .willReturn(increaseCartItem);
 
         //when
         CartItemDto cartDto =
-                cartService.updateCartAmountDecrease(3L, "dbdbdb@naver.com");
+                cartItemService.updateCartItemAmountDecrease(13L, "dbdbdb@naver.com");
 
         //then
-        assertEquals(9000L, cartDto.getProductTotalPrice());
-        assertEquals(9L, cartDto.getAmount());
+        assertEquals(4000L, cartDto.getProductTotalPrice());
+        assertEquals(4L, cartDto.getAmount());
     }
 
-//    @Test
-//    @DisplayName("장바구니 상품 삭제")
-//    void removeCartProduct() {
-//        //given
-//        MemberEntity member = MemberEntity.builder()
-//                .id(11L)
-//                .email("dbdbdb@naver.com")
-//                .build();
-//
-//        CartEntity cart = CartEntity.builder()
-//                .cartId(3L)
-//                .totalPrice(13000L)
-//                .memberEntity(member)
-//                .amount(10L)
-//                .build();
-//
-//        given(memberRepository.findByEmail("dbdbdb@naver.com"))
-//                .willReturn(Optional.of(member));
-//
-//        given(cartRepository.findByCartId(3L))
-//                .willReturn(Optional.ofNullable(cart));
-//
-//        //when
-//        cartService.removeCartProduct(3L, "dbdbdb@naver.com");
-//    }
+    @Test
+    @DisplayName("장바구니 상품 삭제")
+    void removeCartItemProduct() {
+        //given
+        MemberEntity member = MemberEntity.builder()
+                .id(11L)
+                .email("dbdbdb@naver.com")
+                .build();
+
+        CartEntity cart = CartEntity.builder()
+                .cartId(5L)
+                .memberEntity(member)
+                .totalPrice(13000L)
+                .build();
+
+        ProductEntity product = ProductEntity.builder()
+                .productId(13L)
+                .productName("김")
+                .price(1000L)
+                .explanation("맛있는 김입니다")
+                .memberEntity(member)
+                .amount(10L)
+                .build();
+
+        CartItemEntity cartItem = CartItemEntity.builder()
+                .cartEntity(cart)
+                .productEntity(product)
+                .amount(5L)
+                .build();
+
+        given(memberRepository.findByEmail("dbdbdb@naver.com"))
+                .willReturn(Optional.of(member));
+        given(cartRepository.findByMemberEntity(member))
+                .willReturn(Optional.of(cart));
+        given(productRepository.findByProductId(product.getProductId()))
+                .willReturn(Optional.of(product));
+        given(cartItemRepository.findByCartEntityAndProductEntity(cart, product))
+                .willReturn(Optional.of(cartItem));
+
+        //when
+        cartItemService.removeCartProduct(13L, "dbdbdb@naver.com");
+    }
 }

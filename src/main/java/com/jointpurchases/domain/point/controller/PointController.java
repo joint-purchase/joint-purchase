@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@RestController("/point")
+@RestController
+@RequestMapping("/point")
 @RequiredArgsConstructor
 public class PointController {
     private final PointService pointService;

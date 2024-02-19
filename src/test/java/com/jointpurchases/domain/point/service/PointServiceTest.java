@@ -1,17 +1,16 @@
 package com.jointpurchases.domain.point.service;
 
+import com.jointpurchases.domain.cart.model.entity.MemberEntity;
+import com.jointpurchases.domain.cart.repository.MemberRepository;
 import com.jointpurchases.domain.point.model.dto.GetPoint;
 import com.jointpurchases.domain.point.model.dto.PointChangeDto;
 import com.jointpurchases.domain.point.model.dto.PointHistory;
-import com.jointpurchases.domain.point.model.entity.MemberEntity;
 import com.jointpurchases.domain.point.model.entity.PointEntity;
-import com.jointpurchases.domain.point.repository.MemberRepository;
 import com.jointpurchases.domain.point.repository.PointRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
