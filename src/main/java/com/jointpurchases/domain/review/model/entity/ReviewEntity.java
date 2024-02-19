@@ -1,22 +1,26 @@
 package com.jointpurchases.domain.review.model.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@NoArgsConstructor
+
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "REVIEW")
 public class ReviewEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
+    private long id;
+  
     private String title;
 
-    @Column(length = 1000, nullable = false)
+    @Column(length = 1000)
     private String contents;
 
     private int rating;
@@ -24,37 +28,28 @@ public class ReviewEntity {
     private LocalDateTime registerDate;
 
     private LocalDateTime modifiedDate;
-/*
-Setter 구현
- */
-    public void setTitle(String title){
-        this.title = title;
-    }
 
-    public void setContents(String contents){
-        this.contents = contents;
-    }
-
-    public void setRating(int rating){
-        this.rating = rating;
-    }
-
-    public void setRegisterDate(LocalDateTime registerDate){
-        this.registerDate = registerDate;
-    }
-
-    public void setModifiedDate(LocalDateTime modifiedDate){
-        this.modifiedDate = modifiedDate;
-    }
-
+    @ManyToOne
+    @JoinColumn(name = "PRODUCT_ID")
+    private ProductEntity product;
 
     @Builder
-    public ReviewEntity(String title, String contents, int rating, LocalDateTime registerDate, LocalDateTime modifiedDate){
+    public ReviewEntity(int id, String title, String contents, int rating, LocalDateTime registerDate, LocalDateTime modifiedDate, ProductEntity product){
         this.title = title;
         this.contents = contents;
         this.rating = rating;
         this.registerDate = registerDate;
         this.modifiedDate = modifiedDate;
+        this.product = product;
     }
 
+    /*
+    리뷰 수정을 위한 메서드
+     */
+    public void updateReview(String title, String contents, int rating, LocalDateTime modifiedDate){
+        this.title = title;
+        this.contents = contents;
+        this.rating = rating;
+        this.modifiedDate = modifiedDate;
+    }
 }

@@ -20,27 +20,33 @@ public class ReviewController {
     private final ReviewService reviewService;
 /*
 리뷰 작성
-dto 구성 : 제목(title), 내용(contents), 별점(rating) ,사진 파일(multipartfile)
+
+dto 구성 : 상품ID(id), 제목(title), 내용(contents), 별점(rating) ,사진 파일(multipartfile)
  */
     @PostMapping
-    public CreateReviewDto.Response createReview(@RequestPart(value = "dto") CreateReviewDto.Request request,@RequestPart(value = "files",required = false) List<MultipartFile> files) throws IOException {
-       return reviewService.createReview(request.getTitle(), request.getContents(), request.getRating(), files);
+    public CreateReviewDto.Response createReview(@RequestPart(value = "dto") CreateReviewDto.Request request, @RequestPart(value = "files", required = false) List<MultipartFile> files) throws IOException {
+       return reviewService.createReview(request.getProductId(), request.getTitle(), request.getContents(), request.getRating(), files);
     }
 /*
 리뷰 수정
 dto 구성 : 리뷰ID(id), 제목(title), 내용(contents), 별점(rating),사진 파일(multipartfile)
  */
     @PutMapping
-    public ModifyReviewDto.Response modifyReview(@RequestPart(value = "dto") ModifyReviewDto.Request request, @RequestPart(value = "files",required = false) List<MultipartFile> files) throws IOException {
+    public ModifyReviewDto.Response modifyReview(@RequestPart(value = "dto", required = false) ModifyReviewDto.Request request, @RequestPart(value = "files", required = false) List<MultipartFile> files) throws IOException {
         return reviewService.modifyReview(request.getId(), request.getTitle(), request.getContents(), request.getRating(), files);
     }
 /*
-리뷰 조회
-dto 구성 : 리뷰ID(id)
+리뷰 단일 삭제
  */
-    @GetMapping
-    public GetReviewDto.Response getOneById(@RequestPart(value = "dto") GetReviewDto.Request request){
-        return reviewService.getOneById(request.getId());
+    @DeleteMapping
+    public long deleteReview(@RequestParam(value = "id") long id){
+        return reviewService.deleteById(id);
     }
-
+/*
+상품 리뷰 전체 삭제
+ */
+    @DeleteMapping("/product")
+    public long deleteAllReviewByProductId(@RequestParam(value = "id") long id){
+        return reviewService.deleteAllReviewByProductId(id);
+    }
 }
