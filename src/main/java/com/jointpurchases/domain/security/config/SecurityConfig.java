@@ -33,23 +33,20 @@ public class SecurityConfig {
 
 
         http
-                .csrf()
-                .disable()
+                .csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/v1/auth/**", "login","/","register") // white list - 인증 불요
-                .permitAll()
-                .anyRequest() // white list 제외 인증 필요
-                .authenticated()
+                    .requestMatchers("/api/v1/auth/**", "login","/","register").permitAll() // white list - 인증 불요
+                    .anyRequest().authenticated() // white list 제외 인증 필요
                 .and()
                 .sessionManagement()// 세션관리 - jwt로 인증하기 때문에 무상태성으로 전환
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                    .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout()
-                .logoutUrl("/api/v1/auth/logout")
-                .addLogoutHandler(logoutHandler)
-                .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
+                    .logoutUrl("/api/v1/auth/logout")
+                    .addLogoutHandler(logoutHandler)
+                    .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
         ;
 
         return http.build();

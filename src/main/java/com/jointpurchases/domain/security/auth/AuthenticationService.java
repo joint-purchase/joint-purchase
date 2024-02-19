@@ -3,6 +3,7 @@ package com.jointpurchases.domain.security.auth;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jointpurchases.domain.security.config.JwtService;
 import com.jointpurchases.domain.security.token.Token;
+import com.jointpurchases.domain.security.token.TokenManagementService;
 import com.jointpurchases.domain.security.token.TokenRepository;
 import com.jointpurchases.domain.security.token.TokenType;
 import com.jointpurchases.domain.security.user.Role;
@@ -31,6 +32,9 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
 
+    // 토큰관리서비스 의존성 추가
+    private final TokenManagementService tokenManagementService;
+
 
     // 회원가입
     public RegisterResponse register(RegisterRequest request) {
@@ -42,6 +46,7 @@ public class AuthenticationService {
             throw new RuntimeException("Error: Username is already taken.");
         }
 
+        // UserDetails 상속 객체 생성
         User user = User.builder()
                 .name(request.getName())
                 .email(request.getEmail())
@@ -51,10 +56,18 @@ public class AuthenticationService {
                 .phone(request.getPhone())
                 .role(Role.USER)
                 .build();
+
+        // User 객체 저장
         User savedUser = userRepository.save(user);
+
+        // user 객체 토대로 토큰 생성
         String jwtToken = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
+
+        // 토큰 저장
         saveUserToken(savedUser, jwtToken);
+
+        // 토큰을 응답에서 body에 사용할 객체에 넣어서 반환
         return RegisterResponse.builder()
                 .accessToken(jwtToken).refreshToken(refreshToken).build();
     }
@@ -73,8 +86,18 @@ public class AuthenticationService {
                 .orElseThrow();
         String jwtToken = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
+
+        // DB에 토큰 저장
         revokeAllUserTokens(user);
         saveUserToken(user,jwtToken);
+
+        // 별도 객체에 토큰 저장
+        // TODO 프론트와 연결시 삭제해야 함
+        tokenManagementService.storeAccessToken(user.getId().toString(), jwtToken);
+        tokenManagementService.storeRefreshToken(user.getId().toString(), refreshToken);
+
+
+
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken).refreshToken(refreshToken).build();
     }
@@ -125,8 +148,15 @@ public class AuthenticationService {
 
             if (jwtService.isTokenValid(refreshToken, user)) {
                 var accessToken = jwtService.generateToken(user);
+
+                // db 에 토큰 저장
                 revokeAllUserTokens(user);
                 saveUserToken(user,accessToken);
+
+                // 별도 객체에 토큰 저장
+                // TODO 프론트 연결 시 삭제필요
+                tokenManagementService.storeAccessToken(user.getId().toString(), accessToken);
+
                 var authResponse = AuthenticationResponse.builder()
                         .accessToken(accessToken)
                         .refreshToken(refreshToken)
