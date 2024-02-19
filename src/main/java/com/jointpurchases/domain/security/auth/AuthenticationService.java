@@ -33,7 +33,7 @@ public class AuthenticationService {
 
 
     // 회원가입
-    public AuthenticationResponse register(RegisterRequest request) {
+    public RegisterResponse register(RegisterRequest request) {
 
         if (!request.getPassword().equals(request.getConfirmPassword())) {
             throw new RuntimeException("Error: Passwords do not match!");
@@ -55,7 +55,7 @@ public class AuthenticationService {
         String jwtToken = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
         saveUserToken(savedUser, jwtToken);
-        return AuthenticationResponse.builder()
+        return RegisterResponse.builder()
                 .accessToken(jwtToken).refreshToken(refreshToken).build();
     }
 

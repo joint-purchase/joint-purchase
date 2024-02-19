@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class AuthenticationResponse {
+public class RegisterResponse {
 
     @JsonProperty("access_token")
     private String accessToken;
