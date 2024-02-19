@@ -146,7 +146,7 @@ public class ReviewService {
         return ModifyReviewDto.Response.response(response);
     }
 /*
-리뷰 삭제
+리뷰 단일 삭제
  */
     public long deleteById(long id){
         List<ReviewImageEntity> nowReviewImageList = reviewImageRepository.findAllByReviewId(id);
@@ -163,6 +163,18 @@ public class ReviewService {
         }
 
         reviewRepository.deleteById(id);
+        return id;
+    }
+/*
+상품 리뷰 전체 삭제
+ */
+    public long deleteAllReviewByProductId(long id){
+        List<ReviewEntity> nowReviewList = reviewRepository.findAllByProductId(id);
+
+        for(ReviewEntity reviewEntity : nowReviewList){
+            deleteById(reviewEntity.getId());
+        }
+
         return id;
     }
 }

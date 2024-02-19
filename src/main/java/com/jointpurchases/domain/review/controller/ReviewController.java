@@ -35,11 +35,18 @@ dto 구성 : 리뷰ID(id), 제목(title), 내용(contents), 별점(rating),사�
         return reviewService.modifyReview(request.getId(), request.getTitle(), request.getContents(), request.getRating(), files);
     }
 /*
-리뷰 삭제
+리뷰 단일 삭제
  */
     @DeleteMapping
     public long deleteReview(@RequestParam(value = "id") long id){
         return reviewService.deleteById(id);
+    }
+/*
+상품 리뷰 전체 삭제
+ */
+    @DeleteMapping("/product")
+    public long deleteAllReviewByProductId(@RequestParam(value = "id") long id){
+        return reviewService.deleteAllReviewByProductId(id);
     }
 
 }

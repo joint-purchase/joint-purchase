@@ -12,4 +12,8 @@ public class ProductEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    public ProductEntity(long id){
+        this.id = id;
+    }
 }
