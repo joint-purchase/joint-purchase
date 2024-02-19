@@ -1,21 +1,23 @@
 package com.jointpurchases.domain.review.model.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
+
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "REVIEW")
 public class ReviewEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
+  
     private String title;
 
     @Column(length = 1000)
@@ -50,5 +52,4 @@ public class ReviewEntity {
         this.rating = rating;
         this.modifiedDate = modifiedDate;
     }
-
 }

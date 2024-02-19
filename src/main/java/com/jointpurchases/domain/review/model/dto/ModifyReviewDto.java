@@ -13,6 +13,7 @@ import java.util.List;
 public class ModifyReviewDto {
     @Getter
     public static class Request {
+
         private long id;
         private String title;
         private String contents;
@@ -33,7 +34,7 @@ public class ModifyReviewDto {
         private LocalDateTime registerDate;
         private LocalDateTime modifiedDate;
         private ArrayList<String> filePaths;
-
+    
         public static Response response(Response response){
             return Response.builder().
                     title(response.getTitle()).

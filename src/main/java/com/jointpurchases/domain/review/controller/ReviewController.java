@@ -20,6 +20,7 @@ public class ReviewController {
     private final ReviewService reviewService;
 /*
 리뷰 작성
+
 dto 구성 : 상품ID(id), 제목(title), 내용(contents), 별점(rating) ,사진 파일(multipartfile)
  */
     @PostMapping
@@ -48,5 +49,4 @@ dto 구성 : 리뷰ID(id), 제목(title), 내용(contents), 별점(rating),사�
     public long deleteAllReviewByProductId(@RequestParam(value = "id") long id){
         return reviewService.deleteAllReviewByProductId(id);
     }
-
 }

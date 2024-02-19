@@ -1,10 +1,9 @@
 package com.jointpurchases.domain.review.model.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
@@ -15,8 +14,11 @@ public class ReviewImageEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+  
     private String filename;
+  
     private String filepath;
+  
     private LocalDateTime uploadDate;
 
     @ManyToOne

@@ -23,7 +23,7 @@ public class GetReviewDto {
         private LocalDateTime registerDate;
         private LocalDateTime modifiedDate;
         private ArrayList<String> filePaths;
-
+      
         public static Response response(Response response){
             return Response.builder().
                     title(response.getTitle()).
