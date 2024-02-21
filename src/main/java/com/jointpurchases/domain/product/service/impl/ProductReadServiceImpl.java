@@ -1,6 +1,7 @@
 package com.jointpurchases.domain.product.service.impl;
 
 import com.jointpurchases.domain.product.elasticsearch.document.ProductDocument;
+import com.jointpurchases.domain.product.elasticsearch.document.ProductSortOption;
 import com.jointpurchases.domain.product.exception.ProductException;
 import com.jointpurchases.domain.product.model.dto.response.ProductListResponseDto;
 import com.jointpurchases.domain.product.model.dto.response.ProductResponseDto;
@@ -12,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.Criteria;
@@ -48,11 +48,11 @@ public class ProductReadServiceImpl implements ProductReadService {
     }
 
     @Override
-    public Page<ProductListResponseDto> getSearchProduct(Pageable pageable, String category, String keyword) {
+    public Page<ProductListResponseDto> getSearchProduct(Pageable pageable, String category, String keyword, String sort) {
         Criteria criteria = createCriteria(category, keyword);
 
         CriteriaQuery criteriaQuery = new CriteriaQuery(criteria, pageable)
-                .addSort(Sort.by(Sort.Direction.DESC, "createdAt"));
+                .addSort(ProductSortOption.from(sort).getSortOption());
 
         SearchHits<ProductDocument> searchHits = elasticsearchOperations.search(criteriaQuery, ProductDocument.class);
         List<ProductListResponseDto> content = convertToDtoList(searchHits);
@@ -73,7 +73,7 @@ public class ProductReadServiceImpl implements ProductReadService {
     private List<ProductListResponseDto> convertToDtoList(SearchHits<ProductDocument> searchHits) {
         return searchHits.getSearchHits()
                 .stream()
-                .map(hit -> ProductListResponseDto.from(hit.getContent()))
+                .map(hit -> ProductListResponseDto.of(hit.getContent()))
                 .toList();
     }
 }

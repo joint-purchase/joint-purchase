@@ -34,7 +34,7 @@ public record ProductListResponseDto(
                 .build();
     }
 
-    public static ProductListResponseDto from(ProductDocument product) {
+    public static ProductListResponseDto of(ProductDocument product) {
         return ProductListResponseDto.builder()
                 .id(product.getId())
                 .categoryName(product.getCategoryName())
