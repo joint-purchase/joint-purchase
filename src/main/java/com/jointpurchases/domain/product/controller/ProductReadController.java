@@ -30,6 +30,15 @@ public class ProductReadController {
                 .body(productReadService.getProduct(id));
     }
 
-
+    @GetMapping("/product/search")
+    public ResponseEntity<?> getSearchProduct(
+            @RequestParam(value = "page", defaultValue = "1", required = false) int page,
+            @RequestParam(value = "size", defaultValue = "10", required = false) int size,
+            @RequestParam(name = "c", required = false) String category,
+            @RequestParam(name = "q") String query)
+    {
+        return ResponseEntity.ok()
+                .body(productReadService.getSearchProduct(PageRequest.of(page - 1, size), category, query));
+    }
 
 }

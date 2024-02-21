@@ -1,4 +1,4 @@
-package com.jointpurchases.domain.product.service.scheduler;
+package com.jointpurchases.domain.product.aop.scheduler;
 
 import com.jointpurchases.domain.product.repository.ProductRepository;
 import com.jointpurchases.global.util.RedisUtil;
