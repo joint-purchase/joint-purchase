@@ -1,6 +1,7 @@
 package com.jointpurchases.global.advice;
 
 
+import com.jointpurchases.domain.auth.exception.UserException;
 import com.jointpurchases.domain.cart.exception.CartException;
 import com.jointpurchases.domain.category.exception.CategoryException;
 import com.jointpurchases.domain.point.exception.PointException;
@@ -14,6 +15,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class CustomExceptionHandler {
+
+    @ExceptionHandler(UserException.class)
+    public ResponseEntity<?> memberExceptionHandler(UserException e){
+        return ResponseEntity.status(e.getErrorCode().getStatusCode())
+                .body(ServiceResult.fail(e.getErrorCode()));
+    }
 
     @ExceptionHandler(ImageFailToUploadException.class)
     public ResponseEntity<?> ImageFailToUploadExceptionHandler(ImageFailToUploadException e) {
