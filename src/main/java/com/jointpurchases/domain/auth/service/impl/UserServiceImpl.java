@@ -1,12 +1,10 @@
 package com.jointpurchases.domain.auth.service.impl;
 
 
-import com.jointpurchases.domain.auth.application.UserService;
 import com.jointpurchases.domain.auth.exception.UserException;
 import com.jointpurchases.domain.auth.model.dto.SignupRequestDto;
 import com.jointpurchases.domain.auth.model.entity.User;
 import com.jointpurchases.domain.auth.model.type.UserRole;
-import com.jointpurchases.domain.auth.dao.UserRepository;
 import com.jointpurchases.domain.auth.repository.UserRepository;
 import com.jointpurchases.domain.auth.service.UserService;
 import lombok.RequiredArgsConstructor;

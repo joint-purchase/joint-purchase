@@ -1,7 +1,7 @@
 package com.jointpurchases.domain.product.controller;
 
+import com.jointpurchases.domain.auth.model.entity.User;
 import com.jointpurchases.domain.product.model.dto.request.ProductRequestDto;
-import com.jointpurchases.domain.product.model.entity.User;
 import com.jointpurchases.domain.product.service.ProductService;
 import com.jointpurchases.global.common.ServiceResult;
 import com.jointpurchases.global.tool.LoginUser;

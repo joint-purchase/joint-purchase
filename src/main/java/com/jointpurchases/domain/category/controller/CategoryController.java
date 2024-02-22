@@ -16,6 +16,7 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping("/category")
+    public ResponseEntity<?> getCategoryList(){
         return ResponseEntity.ok()
                 .body(categoryService.getCategoryList());
     }
