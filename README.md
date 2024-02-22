@@ -71,7 +71,32 @@
  
 # ERD
 ![스크린샷 2024-02-15 214002](https://github.com/joint-purchase/joint-purchase/assets/112931862/a6a60c25-f6b3-498d-be64-316bce56ab08)
+<br><br><br>
 
+  
+## 🍪 기술 스택
+
+### 🖥 Backend
+| 영역 | 종류 |
+| --- | --- |
+| Tech Stack |  Spring Boot, Spring, JPA, Spring Security |
+| Database |  MYSQL, Redis |
+| Programming Language | Java |
+| Build |  Gradle |
+| API |  REST |
+| search | Elastic Search, Kibana |
+| Version Control |  Git, GitHub |
+| CICD | Github Action |
+| DevOps | Docker, AWS EC2, AWS S3, AWS RDS |
+
+<br>
+
+### 🖥 Common
+| 영역 | 종류 |
+| --- | --- |
+| 협업 툴 |  Notion |
+| 소통 |  Discord, Slack |
+<br>
 
 ## 👀 개발 기간
 #### 2024. 01 ~ 2024. 02
