@@ -10,6 +10,10 @@ public enum ErrorCode {
 
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "내부 서버 오류가 발생했습니다."),
 
+    DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "중복된 이메일 입니다."),
+    INVALID_ADMIN_PASSWORD(HttpStatus.BAD_REQUEST, "관리자 암호가 틀려 등록이 불가합니다."),
+    NOT_FOUND_EMAIL(HttpStatus.BAD_REQUEST, "등록되지 않은 이메일입니다."),
+
     DUPLICATE_CATEGORY(HttpStatus.BAD_REQUEST, "해당 카테고리가 이미 존재합니다."),
     NOT_FOUND_CATEGORY(HttpStatus.BAD_REQUEST, "해당 카테고리가 존재하지 않습니다."),
 
