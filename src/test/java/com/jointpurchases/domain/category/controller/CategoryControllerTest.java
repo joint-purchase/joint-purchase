@@ -1,6 +1,7 @@
 package com.jointpurchases.domain.category.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jointpurchases.domain.auth.security.jwt.JwtAuthenticationFilter;
 import com.jointpurchases.domain.category.model.dto.CategoryRequestDto;
 import com.jointpurchases.domain.category.model.dto.CategoryResponseDto;
 import com.jointpurchases.domain.category.service.impl.CategoryServiceImpl;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -22,9 +25,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest
-//@WebMvcTest(value = CategoryController.class, excludeFilters = {
-//        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JwtAuthenticationFilter.class)})
+//@WebMvcTest
+@WebMvcTest(value = CategoryController.class, excludeFilters = {
+        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JwtAuthenticationFilter.class)})
 @AutoConfigureMockMvc(addFilters = false)
 public class CategoryControllerTest {
 
