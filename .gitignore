@@ -44,3 +44,5 @@ application.properties
 .vscode/
 /src/main/resources/application.properties
 
+### querydsl ###
+/src/main/generated
