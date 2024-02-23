@@ -1,14 +1,14 @@
 package com.jointpurchases.domain.cart.service;
 
+import com.jointpurchases.domain.auth.model.entity.User;
+import com.jointpurchases.domain.auth.repository.UserRepository;
 import com.jointpurchases.domain.cart.exception.CartException;
 import com.jointpurchases.domain.cart.model.dto.CartItem;
 import com.jointpurchases.domain.cart.model.dto.CartItemDto;
 import com.jointpurchases.domain.cart.model.entity.CartEntity;
 import com.jointpurchases.domain.cart.model.entity.CartItemEntity;
-import com.jointpurchases.domain.cart.model.entity.MemberEntity;
 import com.jointpurchases.domain.cart.repository.CartItemRepository;
 import com.jointpurchases.domain.cart.repository.CartRepository;
-import com.jointpurchases.domain.cart.repository.MemberRepository;
 import com.jointpurchases.domain.product.model.entity.Product;
 import com.jointpurchases.domain.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,16 +27,13 @@ public class CartItemService {
     private final CartItemRepository cartItemRepository;
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
-    private final MemberRepository memberRepository;
 
     //상품 담기
     @Transactional
-    public CartItemDto addProductToCart(Long productId, Integer amount, String email) {
-        MemberEntity memberEntity = getMemberEntity(email);
-
+    public CartItemDto addProductToCart(Long productId, Integer amount, User userEntity) {
         Product product = getProductEntity(productId);
 
-        CartEntity cartEntity = getCartEntity(memberEntity);
+        CartEntity cartEntity = getCartEntity(userEntity);
 
         if (this.cartItemRepository.existsByCartEntityAndProduct(cartEntity, product)) {
             throw new CartException(ALREADY_EXISTS_PRODUCT_IN_CART);
@@ -51,10 +48,8 @@ public class CartItemService {
     }
 
     //장바구니에 담긴 상품 조회
-    public List<CartItem.Response> getCartItemList(String email) {
-        MemberEntity memberEntity = getMemberEntity(email);
-
-        CartEntity cartEntity = getCartEntity(memberEntity);
+    public List<CartItem.Response> getCartItemList(User userEntity) {
+        CartEntity cartEntity = getCartEntity(userEntity);
 
         List<CartItemEntity> cartItemEntityList =
                 this.cartItemRepository.findAllByCartEntity(cartEntity);
@@ -69,10 +64,8 @@ public class CartItemService {
 
     //장바구니 상품 수량 증가
     @Transactional
-    public CartItemDto updateCartItemAmountIncrease(Long productId, String email) {
-        MemberEntity memberEntity = getMemberEntity(email);
-
-        CartEntity cartEntity = getCartEntity(memberEntity);
+    public CartItemDto updateCartItemAmountIncrease(Long productId, User userEntity) {
+        CartEntity cartEntity = getCartEntity(userEntity);
 
         Product product = getProductEntity(productId);
 
@@ -91,10 +84,8 @@ public class CartItemService {
 
     //장바구니 상품 수량 감소
     @Transactional
-    public CartItemDto updateCartItemAmountDecrease(Long productId, String email) {
-        MemberEntity memberEntity = getMemberEntity(email);
-
-        CartEntity cartEntity = getCartEntity(memberEntity);
+    public CartItemDto updateCartItemAmountDecrease(Long productId, User userEntity) {
+        CartEntity cartEntity = getCartEntity(userEntity);
 
         Product product = getProductEntity(productId);
 
@@ -113,10 +104,8 @@ public class CartItemService {
 
     //장바구니 상품 삭제
     @Transactional
-    public void removeCartProduct(Long productId, String email) {
-        MemberEntity memberEntity = getMemberEntity(email);
-
-        CartEntity cartEntity = getCartEntity(memberEntity);
+    public void removeCartProduct(Long productId, User userEntity) {
+        CartEntity cartEntity = getCartEntity(userEntity);
 
         Product product = getProductEntity(productId);
 
@@ -128,14 +117,9 @@ public class CartItemService {
         this.cartItemRepository.delete(cartItemEntity);
     }
 
-    private CartEntity getCartEntity(MemberEntity memberEntity) {
-        return cartRepository.findByMemberEntity(memberEntity)
+    private CartEntity getCartEntity(User memberEntity) {
+        return cartRepository.findByUserEntity(memberEntity)
                 .orElseThrow(() -> new CartException(NOT_EXISTS_USER_CART));
-    }
-
-    private MemberEntity getMemberEntity(String email) {
-        return this.memberRepository.findByEmail(email)
-                .orElseThrow(() -> new CartException(NOT_EXISTS_USERID));
     }
 
     private Product getProductEntity(Long productId) {

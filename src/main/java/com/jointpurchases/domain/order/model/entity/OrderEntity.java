@@ -1,7 +1,7 @@
 package com.jointpurchases.domain.order.model.entity;
 
+import com.jointpurchases.domain.auth.model.entity.User;
 import com.jointpurchases.domain.cart.model.entity.CartEntity;
-import com.jointpurchases.domain.cart.model.entity.MemberEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +23,7 @@ public class OrderEntity {
 
     @ManyToOne
     @JoinColumn(name = "member_id")
-    private MemberEntity memberEntity;
+    private User userEntity;
 
     @ManyToOne
     @JoinColumn(name = "cart_id")

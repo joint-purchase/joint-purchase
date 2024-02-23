@@ -1,5 +1,6 @@
 package com.jointpurchases.domain.cart.model.entity;
 
+import com.jointpurchases.domain.auth.model.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +19,6 @@ public class CartEntity {
 
     @ManyToOne
     @JoinColumn(name = "member_id")
-    private MemberEntity memberEntity;
+    private User userEntity;
     private Integer totalPrice;
 }

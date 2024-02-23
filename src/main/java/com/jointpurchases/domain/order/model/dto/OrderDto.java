@@ -23,10 +23,10 @@ public class OrderDto {
     public static OrderDto from(List<Long> productIdList, String address, OrderEntity order) {
         return OrderDto.builder()
                 .orderId(order.getOrderId())
-                .email(order.getMemberEntity().getEmail())
-                .name(order.getMemberEntity().getUsername())
+                .email(order.getUserEntity().getEmail())
+                .name(order.getUserEntity().getUsername())
                 .address(address)
-                .phone(order.getMemberEntity().getPhone())
+                .phone(order.getUserEntity().getPhone())
                 .orderedDate(LocalDateTime.now())
                 .productIdList(productIdList)
                 .payment(order.getPayment())

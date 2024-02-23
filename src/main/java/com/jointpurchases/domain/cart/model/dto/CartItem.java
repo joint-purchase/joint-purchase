@@ -10,7 +10,6 @@ public class CartItem {
     public static class Request {
         private Long productId;
         private Integer amount;
-        private String email;
     }
 
     @Getter

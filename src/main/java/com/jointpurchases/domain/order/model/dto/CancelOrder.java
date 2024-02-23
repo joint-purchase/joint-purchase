@@ -8,7 +8,6 @@ public class CancelOrder {
 
     @Getter
     public static class Request {
-        private String email;
         private Long orderId;
     }
 
@@ -22,7 +21,7 @@ public class CancelOrder {
 
         public static Response from(OrderEntity order, Integer money) {
             return Response.builder()
-                    .email(order.getMemberEntity().getEmail())
+                    .email(order.getUserEntity().getEmail())
                     .orderId(order.getOrderId())
                     .payment(order.getPayment())
                     .money(money)

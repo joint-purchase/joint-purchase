@@ -10,7 +10,6 @@ public class CreateOrder {
 
     @Getter
     public static class Request {
-        private String email;
         private Integer money;
         private String address;
     }

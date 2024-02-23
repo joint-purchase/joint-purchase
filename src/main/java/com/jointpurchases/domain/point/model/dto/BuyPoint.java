@@ -10,7 +10,6 @@ public class BuyPoint {
 
     @Getter
     public static class Request {
-        private String email;
         private Integer money;
     }
 

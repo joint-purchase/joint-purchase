@@ -1,6 +1,6 @@
 package com.jointpurchases.domain.point.model.entity;
 
-import com.jointpurchases.domain.cart.model.entity.MemberEntity;
+import com.jointpurchases.domain.auth.model.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,5 +30,5 @@ public class PointEntity {
 
     @ManyToOne
     @JoinColumn(name = "member_id")
-    private MemberEntity memberEntity;
+    private User userEntity;
 }
