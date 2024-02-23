@@ -26,8 +26,8 @@ public class OrderController {
 
     //상품 주문 취소
     @PutMapping
-    public CancelOrder.Response cancelOrder(@RequestBody CancelOrder.Request request,
+    public CancelOrder.Response cancelOrder(@RequestParam Long orderId,
                                             @LoginUser User user) {
-        return this.orderService.cancelOrder(user, request.getOrderId());
+        return this.orderService.cancelOrder(user, orderId);
     }
 }

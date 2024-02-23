@@ -7,11 +7,6 @@ import lombok.Getter;
 public class CancelOrder {
 
     @Getter
-    public static class Request {
-        private Long orderId;
-    }
-
-    @Getter
     @Builder
     public static class Response {
         private String email;

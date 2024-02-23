@@ -15,7 +15,7 @@ import java.util.List;
 @Repository
 public interface PointRepository extends JpaRepository<PointEntity, Long> {
 
-    @Query("select p from point p where p.userEntity = :memberEntity order by p.createdDate DESC")
+    @Query("select p from point p where p.userEntity = :userEntity order by p.createdDate DESC")
     Page<PointEntity> findByUserEntity(User userEntity, Pageable pageable);
 
     List<PointEntity> findAllByUserEntityAndCreatedDateBetween
