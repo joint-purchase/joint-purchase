@@ -18,7 +18,7 @@ public class CartEntity {
     private Long cartId;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "users_id")
     private User userEntity;
     private Integer totalPrice;
 }

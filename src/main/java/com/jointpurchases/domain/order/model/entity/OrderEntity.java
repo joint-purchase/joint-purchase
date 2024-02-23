@@ -22,7 +22,7 @@ public class OrderEntity {
     private Long orderId;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "users_id")
     private User userEntity;
 
     @ManyToOne
