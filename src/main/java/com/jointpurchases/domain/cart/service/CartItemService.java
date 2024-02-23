@@ -6,10 +6,10 @@ import com.jointpurchases.domain.cart.model.dto.CartItemDto;
 import com.jointpurchases.domain.cart.model.entity.CartEntity;
 import com.jointpurchases.domain.cart.model.entity.CartItemEntity;
 import com.jointpurchases.domain.cart.model.entity.MemberEntity;
-import com.jointpurchases.domain.product.model.entity.Product;
 import com.jointpurchases.domain.cart.repository.CartItemRepository;
 import com.jointpurchases.domain.cart.repository.CartRepository;
 import com.jointpurchases.domain.cart.repository.MemberRepository;
+import com.jointpurchases.domain.product.model.entity.Product;
 import com.jointpurchases.domain.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -138,7 +138,7 @@ public class CartItemService {
                 .orElseThrow(() -> new CartException(NOT_EXISTS_USERID));
     }
 
-    private com.jointpurchases.domain.product.model.entity.Product getProductEntity(Long productId) {
+    private Product getProductEntity(Long productId) {
         return this.productRepository.findById(productId)
                 .orElseThrow(() -> new CartException(NOT_EXISTS_PRODUCT));
     }
