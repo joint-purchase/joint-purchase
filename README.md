@@ -79,23 +79,24 @@
 ### 🖥 Backend
 | 영역 | 종류 |
 | --- | --- |
-| Tech Stack |  Spring Boot, Spring, JPA, Spring Security |
-| Database |  MYSQL, Redis |
-| Programming Language | Java |
-| Build |  Gradle |
-| API |  REST |
-| search | Elastic Search, Kibana |
-| Version Control |  Git, GitHub |
-| CICD | Github Action |
-| DevOps | Docker, AWS EC2, AWS S3, AWS RDS |
+| Tech Stack | ![Spring Boot](https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white) ![Spring](https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white) ![JPA](https://img.shields.io/badge/JPA-007396?style=for-the-badge&logo=java&logoColor=white) ![Spring Security](https://img.shields.io/badge/Spring_Security-6DB33F?style=for-the-badge&logo=spring-security&logoColor=white) |
+| Database | ![MYSQL](https://img.shields.io/badge/MYSQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white) ![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white) |
+| Programming Language | ![Java](https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white) |
+| Build | ![Gradle](https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white) |
+| API | ![REST](https://img.shields.io/badge/REST-007396?style=for-the-badge) |
+| Search | ![Elasticsearch](https://img.shields.io/badge/elasticsearch-F8DC75?style=for-the-badge&logo=elasticsearch&logoColor=white) ![Kibana](https://img.shields.io/badge/Kibana-005571?style=for-the-badge&logo=kibana&logoColor=white) |
+| Version Control | ![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white) ![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white) |
+| CICD | ![Github Action](https://img.shields.io/badge/Github_Action-2088FF?style=for-the-badge&logo=github-actions&logoColor=white) |
+| DevOps | ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white) ![AWS EC2](https://img.shields.io/badge/AWS_EC2-FF9900?style=for-the-badge&logo=amazon-aws&logoColor=white) ![AWS S3](https://img.shields.io/badge/AWS_S3-569A31?style=for-the-badge&logo=amazon-s3&logoColor=white) ![AWS RDS](https://img.shields.io/badge/AWS_RDS-527FFF?style=for-the-badge&logo=amazon-rds&logoColor=white) |
+
 
 <br>
 
 ### 🖥 Common
 | 영역 | 종류 |
 | --- | --- |
-| 협업 툴 |  Notion |
-| 소통 |  Discord, Slack |
+| 협업 툴 | ![Notion](https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=notion&logoColor=white) |
+| 소통 | ![Discord](https://img.shields.io/badge/Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white) ![Slack](https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white) |
 <br>
 
 ## 👀 개발 기간
