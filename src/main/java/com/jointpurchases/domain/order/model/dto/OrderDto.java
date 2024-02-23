@@ -24,7 +24,7 @@ public class OrderDto {
         return OrderDto.builder()
                 .orderId(order.getOrderId())
                 .email(order.getMemberEntity().getEmail())
-                .name(order.getMemberEntity().getName())
+                .name(order.getMemberEntity().getUsername())
                 .address(address)
                 .phone(order.getMemberEntity().getPhone())
                 .orderedDate(LocalDateTime.now())

@@ -31,7 +31,7 @@ public class PointService {
     //이메일로 memberEntity 검색(나중에 바꿀 수 있음)
     //memberEntity로 point테이블에서 가장 최근에 거래된 내역 찾기 >> 현재 포인트 찾기
     @Transactional
-    public PointChangeDto buyPoint(String email, Long money) {
+    public PointChangeDto buyPoint(String email, Integer money) {
         MemberEntity memberEntity = getMemberEntity(email);
 
         PointEntity pointEntity = getLatestPointForEntity(memberEntity);
@@ -97,7 +97,7 @@ public class PointService {
     //pointEntity == null인 경우(거래가 한번도 없는 경우)와
     //환불 포인드가 잔액 포인트 보다 많은 경우 예외 발생
     @Transactional
-    public PointChangeDto refundPoint(String email, Long refundPoint) {
+    public PointChangeDto refundPoint(String email, Integer refundPoint) {
         MemberEntity memberEntity = getMemberEntity(email);
 
         PointEntity pointEntity = getLatestPointForEntity(memberEntity);
@@ -105,7 +105,7 @@ public class PointService {
         if (pointEntity == null || pointEntity.getCurrentPoint() < refundPoint) {
             throw new PointException(NOT_ENOUGH_POINT_BALANCE);
         } else {
-            Long currentPoint = pointEntity.getCurrentPoint() - refundPoint;
+            Integer currentPoint = pointEntity.getCurrentPoint() - refundPoint;
 
             return PointChangeDto.fromEntity(this.pointRepository.save(PointEntity.builder()
                     .memberEntity(memberEntity)

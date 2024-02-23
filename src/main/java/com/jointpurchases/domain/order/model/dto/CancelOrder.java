@@ -17,10 +17,10 @@ public class CancelOrder {
     public static class Response {
         private String email;
         private Long orderId;
-        private Long money;
+        private Integer money;
         private String payment;
 
-        public static Response from(OrderEntity order, Long money) {
+        public static Response from(OrderEntity order, Integer money) {
             return Response.builder()
                     .email(order.getMemberEntity().getEmail())
                     .orderId(order.getOrderId())

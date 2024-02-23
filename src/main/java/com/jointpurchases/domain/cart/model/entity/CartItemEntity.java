@@ -1,5 +1,6 @@
 package com.jointpurchases.domain.cart.model.entity;
 
+import com.jointpurchases.domain.product.model.entity.Product;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,19 +23,19 @@ public class CartItemEntity {
 
     @ManyToOne
     @JoinColumn(name = "product_id")
-    private ProductEntity productEntity;
+    private Product product;
 
-    private Long amount;
+    private Integer amount;
 
-    private Long productTotalPrice;
+    private Integer productTotalPrice;
 
     public void increaseAmount() {
         this.amount += 1;
-        this.productTotalPrice += productEntity.getPrice();
+        this.productTotalPrice += product.getPrice();
     }
 
     public void decreaseAmount() {
         this.amount -= 1;
-        this.productTotalPrice -= productEntity.getPrice();
+        this.productTotalPrice -= product.getPrice();
     }
 }

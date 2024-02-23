@@ -22,15 +22,11 @@ public class QCartEntity extends EntityPathBase<CartEntity> {
 
     public static final QCartEntity cartEntity = new QCartEntity("cartEntity");
 
-    public final NumberPath<Long> amount = createNumber("amount", Long.class);
-
     public final NumberPath<Long> cartId = createNumber("cartId", Long.class);
 
     public final QMemberEntity memberEntity;
 
-    public final QProductEntity productEntity;
-
-    public final NumberPath<Long> totalPrice = createNumber("totalPrice", Long.class);
+    public final NumberPath<Integer> totalPrice = createNumber("totalPrice", Integer.class);
 
     public QCartEntity(String variable) {
         this(CartEntity.class, forVariable(variable), INITS);
@@ -51,7 +47,6 @@ public class QCartEntity extends EntityPathBase<CartEntity> {
     public QCartEntity(Class<? extends CartEntity> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.memberEntity = inits.isInitialized("memberEntity") ? new QMemberEntity(forProperty("memberEntity")) : null;
-        this.productEntity = inits.isInitialized("productEntity") ? new QProductEntity(forProperty("productEntity"), inits.get("productEntity")) : null;
     }
 
 }

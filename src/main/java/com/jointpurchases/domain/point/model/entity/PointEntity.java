@@ -21,8 +21,8 @@ public class PointEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long changedPoint;
-    private Long currentPoint;
+    private Integer changedPoint;
+    private Integer currentPoint;
 
     private String eventType;
 

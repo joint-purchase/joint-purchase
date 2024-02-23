@@ -22,17 +22,17 @@ public class QPointEntity extends EntityPathBase<PointEntity> {
 
     public static final QPointEntity pointEntity = new QPointEntity("pointEntity");
 
-    public final NumberPath<Long> changedPoint = createNumber("changedPoint", Long.class);
+    public final NumberPath<Integer> changedPoint = createNumber("changedPoint", Integer.class);
 
     public final DateTimePath<java.time.LocalDateTime> createdDate = createDateTime("createdDate", java.time.LocalDateTime.class);
 
-    public final NumberPath<Long> currentPoint = createNumber("currentPoint", Long.class);
+    public final NumberPath<Integer> currentPoint = createNumber("currentPoint", Integer.class);
 
     public final StringPath eventType = createString("eventType");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final QMemberEntity memberEntity;
+    public final com.jointpurchases.domain.cart.model.entity.QMemberEntity memberEntity;
 
     public QPointEntity(String variable) {
         this(PointEntity.class, forVariable(variable), INITS);
@@ -52,7 +52,7 @@ public class QPointEntity extends EntityPathBase<PointEntity> {
 
     public QPointEntity(Class<? extends PointEntity> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.memberEntity = inits.isInitialized("memberEntity") ? new QMemberEntity(forProperty("memberEntity")) : null;
+        this.memberEntity = inits.isInitialized("memberEntity") ? new com.jointpurchases.domain.cart.model.entity.QMemberEntity(forProperty("memberEntity")) : null;
     }
 
 }

@@ -19,9 +19,21 @@ public class QMemberEntity extends EntityPathBase<MemberEntity> {
 
     public static final QMemberEntity memberEntity = new QMemberEntity("memberEntity");
 
+    public final StringPath address = createString("address");
+
+    public final DatePath<java.time.LocalDate> birth = createDate("birth", java.time.LocalDate.class);
+
     public final StringPath email = createString("email");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
+
+    public final StringPath name = createString("name");
+
+    public final StringPath password = createString("password");
+
+    public final StringPath phone = createString("phone");
+
+    public final StringPath role = createString("role");
 
     public QMemberEntity(String variable) {
         super(MemberEntity.class, forVariable(variable));

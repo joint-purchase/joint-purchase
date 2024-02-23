@@ -6,11 +6,11 @@ import com.jointpurchases.domain.cart.model.dto.CartItemDto;
 import com.jointpurchases.domain.cart.model.entity.CartEntity;
 import com.jointpurchases.domain.cart.model.entity.CartItemEntity;
 import com.jointpurchases.domain.cart.model.entity.MemberEntity;
-import com.jointpurchases.domain.cart.model.entity.ProductEntity;
+import com.jointpurchases.domain.product.model.entity.Product;
 import com.jointpurchases.domain.cart.repository.CartItemRepository;
 import com.jointpurchases.domain.cart.repository.CartRepository;
 import com.jointpurchases.domain.cart.repository.MemberRepository;
-import com.jointpurchases.domain.cart.repository.ProductRepository;
+import com.jointpurchases.domain.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,22 +31,22 @@ public class CartItemService {
 
     //상품 담기
     @Transactional
-    public CartItemDto addProductToCart(Long productId, Long amount, String email) {
+    public CartItemDto addProductToCart(Long productId, Integer amount, String email) {
         MemberEntity memberEntity = getMemberEntity(email);
 
-        ProductEntity productEntity = getProductEntity(productId);
+        Product product = getProductEntity(productId);
 
         CartEntity cartEntity = getCartEntity(memberEntity);
 
-        if (this.cartItemRepository.existsByCartEntityAndProductEntity(cartEntity, productEntity)) {
+        if (this.cartItemRepository.existsByCartEntityAndProduct(cartEntity, product)) {
             throw new CartException(ALREADY_EXISTS_PRODUCT_IN_CART);
         }
 
         return CartItemDto.fromEntity(this.cartItemRepository.save(CartItemEntity.builder()
                 .cartEntity(cartEntity)
-                .productEntity(productEntity)
+                .product(product)
                 .amount(amount)
-                .productTotalPrice(productEntity.getPrice() * amount)
+                .productTotalPrice(product.getPrice() * amount)
                 .build()));
     }
 
@@ -63,7 +63,7 @@ public class CartItemService {
             throw new CartException(NOT_EXISTS_PRODUCT_IN_CART);
         }
 
-        return cartItemEntityList.stream().map(e -> new CartItem.Response(e.getProductEntity().getProductName(),
+        return cartItemEntityList.stream().map(e -> new CartItem.Response(e.getProduct().getProductName(),
                 e.getAmount(), e.getProductTotalPrice())).collect(Collectors.toList());
     }
 
@@ -74,14 +74,14 @@ public class CartItemService {
 
         CartEntity cartEntity = getCartEntity(memberEntity);
 
-        ProductEntity productEntity = getProductEntity(productId);
+        Product product = getProductEntity(productId);
 
         CartItemEntity cartItemEntity =
-                this.cartItemRepository.findByCartEntityAndProductEntity(
-                                cartEntity, productEntity)
+                this.cartItemRepository.findByCartEntityAndProduct(
+                                cartEntity, product)
                         .orElseThrow(() -> new CartException(NOT_EXISTS_PRODUCT_IN_CART));
 
-        if (Objects.equals(cartItemEntity.getAmount(), productEntity.getAmount())) {
+        if (Objects.equals(cartItemEntity.getAmount(), product.getStockQuantity())) {
             throw new CartException(DO_NOT_CHANGE_THE_QUANTITY_EXCEEDING_THE_STOCK);
         }
 
@@ -96,11 +96,11 @@ public class CartItemService {
 
         CartEntity cartEntity = getCartEntity(memberEntity);
 
-        ProductEntity productEntity = getProductEntity(productId);
+        Product product = getProductEntity(productId);
 
         CartItemEntity cartItemEntity =
-                this.cartItemRepository.findByCartEntityAndProductEntity(
-                                cartEntity, productEntity)
+                this.cartItemRepository.findByCartEntityAndProduct(
+                                cartEntity, product)
                         .orElseThrow(() -> new CartException(NOT_EXISTS_PRODUCT_IN_CART));
 
         if (cartItemEntity.getAmount() < 1) {
@@ -118,11 +118,11 @@ public class CartItemService {
 
         CartEntity cartEntity = getCartEntity(memberEntity);
 
-        ProductEntity productEntity = getProductEntity(productId);
+        Product product = getProductEntity(productId);
 
         CartItemEntity cartItemEntity =
-                this.cartItemRepository.findByCartEntityAndProductEntity(
-                                cartEntity, productEntity)
+                this.cartItemRepository.findByCartEntityAndProduct(
+                                cartEntity, product)
                         .orElseThrow(() -> new CartException(NOT_EXISTS_PRODUCT_IN_CART));
 
         this.cartItemRepository.delete(cartItemEntity);
@@ -138,8 +138,8 @@ public class CartItemService {
                 .orElseThrow(() -> new CartException(NOT_EXISTS_USERID));
     }
 
-    private ProductEntity getProductEntity(Long productId) {
-        return this.productRepository.findByProductId(productId)
+    private com.jointpurchases.domain.product.model.entity.Product getProductEntity(Long productId) {
+        return this.productRepository.findById(productId)
                 .orElseThrow(() -> new CartException(NOT_EXISTS_PRODUCT));
     }
 }

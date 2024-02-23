@@ -41,7 +41,7 @@ public class Product extends BaseEntity {
     private Category category;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "member_id", nullable = false)
     private User user;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -73,5 +73,17 @@ public class Product extends BaseEntity {
 
     public void likeCountUpdate(Integer likeCount){
         this.likeCount = likeCount;
+    }
+
+    public void decreaseStock(Integer amount) {
+        if (this.stockQuantity > amount) {
+            this.stockQuantity -= amount;
+        } else {
+            throw new RuntimeException("재고가 부족합니다.");
+        }
+    }
+
+    public void increaseStock(Integer amount) {
+        this.stockQuantity += amount;
     }
 }

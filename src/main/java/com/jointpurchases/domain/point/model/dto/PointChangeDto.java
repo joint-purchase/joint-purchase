@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 @Builder
 public class PointChangeDto {
     private String email;
-    private Long changedPoint;
-    private Long currentPoint;
+    private Integer changedPoint;
+    private Integer currentPoint;
     private String eventType;
     private LocalDateTime createdDate;
 

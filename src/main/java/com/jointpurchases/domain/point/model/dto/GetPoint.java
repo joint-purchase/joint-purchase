@@ -7,5 +7,5 @@ import lombok.Getter;
 @Getter
 @Builder
 public class GetPoint {
-    private Long currentPoint;
+    private Integer currentPoint;
 }

@@ -3,11 +3,9 @@ package com.jointpurchases.domain.order.service;
 import com.jointpurchases.domain.cart.model.entity.CartEntity;
 import com.jointpurchases.domain.cart.model.entity.CartItemEntity;
 import com.jointpurchases.domain.cart.model.entity.MemberEntity;
-import com.jointpurchases.domain.cart.model.entity.ProductEntity;
 import com.jointpurchases.domain.cart.repository.CartItemRepository;
 import com.jointpurchases.domain.cart.repository.CartRepository;
 import com.jointpurchases.domain.cart.repository.MemberRepository;
-import com.jointpurchases.domain.cart.repository.ProductRepository;
 import com.jointpurchases.domain.order.model.dto.CancelOrder;
 import com.jointpurchases.domain.order.model.dto.OrderDto;
 import com.jointpurchases.domain.order.model.entity.OrderEntity;
@@ -15,6 +13,8 @@ import com.jointpurchases.domain.order.repository.OrderRepository;
 import com.jointpurchases.domain.point.model.entity.PointEntity;
 import com.jointpurchases.domain.point.repository.PointRepository;
 import com.jointpurchases.domain.point.service.PointService;
+import com.jointpurchases.domain.product.model.entity.Product;
+import com.jointpurchases.domain.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +38,7 @@ public class OrderService {
 
     //상품 주문
     @Transactional
-    public OrderDto createOrder(String email, Long money, String address) {
+    public OrderDto createOrder(String email, Integer money, String address) {
         MemberEntity memberEntity = getMemberEntity(email);
 
         CartEntity cartEntity = getCartEntity(memberEntity);
@@ -50,12 +50,12 @@ public class OrderService {
             throw new RuntimeException("장바구니에 담긴 상품이 없습니다.");
         }
 
-        Long totalPrice = cartEntity.getTotalPrice();
+        Integer totalPrice = cartEntity.getTotalPrice();
         if (totalPrice > money) {
             throw new RuntimeException("결제 금액이 부족합니다.");
         }
 
-        Long currentPoint = this.pointService.getPoint(email).getCurrentPoint();
+        Integer currentPoint = this.pointService.getPoint(email).getCurrentPoint();
         if (currentPoint < money) {
             throw new RuntimeException("포인트 잔액이 부족합니다.");
         }
@@ -70,7 +70,7 @@ public class OrderService {
                 .build());
 
         List<Long> productIdList = cartItemEntityList.stream().map(item ->
-                item.getProductEntity().getProductId()).toList();
+                item.getProduct().getId()).toList();
 
         decreaseProductStock(productIdList, cartItemEntityList);
 
@@ -108,14 +108,14 @@ public class OrderService {
                 this.cartItemRepository.findAllByCartEntity(cartEntity);
 
         List<Long> productIdList = cartItemEntityList.stream().map(item ->
-                item.getProductEntity().getProductId()).toList();
+                item.getProduct().getId()).toList();
 
         increaseProductStock(productIdList, cartItemEntityList);
 
         //포인트 환불
-        Long refundPoint = cartEntity.getTotalPrice();
+        Integer refundPoint = cartEntity.getTotalPrice();
 
-        Long currentPoint = this.pointService.getPoint(email).getCurrentPoint();
+        Integer currentPoint = this.pointService.getPoint(email).getCurrentPoint();
 
         this.pointRepository.save(PointEntity.builder()
                 .memberEntity(memberEntity)
@@ -131,16 +131,16 @@ public class OrderService {
 
     //주문된 상품의 재고 차감
     private void decreaseProductStock(List<Long> productIdList, List<CartItemEntity> cartItemEntityList) {
-        Map<Long, ProductEntity> productEntityMap = getProductEntityMap(productIdList);
+        Map<Long, Product> productEntityMap = getProductEntityMap(productIdList);
 
         cartItemEntityList.forEach(cartItem -> {
-            Long productId = cartItem.getProductEntity().getProductId();
-            ProductEntity productEntity = productEntityMap.get(productId);
-            if (productEntity == null) {
+            Long productId = cartItem.getProduct().getId();
+            Product product = productEntityMap.get(productId);
+            if (product == null) {
                 throw new RuntimeException("상품 정보를 찾을 수 없습니다.");
             }
-            Long amount = cartItem.getAmount();
-            productEntity.decreaseStock(amount);
+            Integer amount = cartItem.getAmount();
+            product.decreaseStock(amount);
         });
 
         this.productRepository.saveAll(productEntityMap.values());
@@ -148,28 +148,28 @@ public class OrderService {
 
     //주문 취소된 상품의 재고 증가
     private void increaseProductStock(List<Long> productIdList, List<CartItemEntity> cartItemEntityList) {
-        Map<Long, ProductEntity> productEntityMap = getProductEntityMap(productIdList);
+        Map<Long, Product> productEntityMap = getProductEntityMap(productIdList);
 
         cartItemEntityList.forEach(cartItem -> {
-            Long productId = cartItem.getProductEntity().getProductId();
-            ProductEntity productEntity = productEntityMap.get(productId);
-            if (productEntity == null) {
+            Long productId = cartItem.getProduct().getId();
+            Product product = productEntityMap.get(productId);
+            if (product == null) {
                 throw new RuntimeException("상품 정보를 찾을 수 없습니다.");
             }
-            Long amount = cartItem.getAmount();
-            productEntity.increaseStock(amount);
+            Integer amount = cartItem.getAmount();
+            product.increaseStock(amount);
         });
 
         this.productRepository.saveAll(productEntityMap.values());
     }
 
     //주문 상품의 productIdList를 입력받아 ProductEntity를 일괄 검색 >> map으로 만들어 반환
-    private Map<Long, ProductEntity> getProductEntityMap(List<Long> productIdList) {
-        List<ProductEntity> productEntityList
-                = this.productRepository.findAllByProductIdIn(productIdList);
+    private Map<Long, Product> getProductEntityMap(List<Long> productIdList) {
+        List<Product> productList
+                = this.productRepository.findAllByIdIn(productIdList);
 
-        return productEntityList.stream().collect(Collectors
-                .toMap(ProductEntity::getProductId, Function.identity()));
+        return productList.stream().collect(Collectors
+                .toMap(Product::getId, Function.identity()));
     }
 
     private CartEntity getCartEntity(MemberEntity memberEntity) {
