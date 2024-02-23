@@ -42,8 +42,12 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(PointException.class)
     public ResponseEntity<?> pointExceptionHandler(PointException e) {
-
-        return new ResponseEntity<>(e, e.getErrorCode().getStatusCode());
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .error(e.getErrorCode().getStatusCode())
+                .code(e.getErrorCode().getStatusCode().value())
+                .message(e.getErrorMessage())
+                .build();
+        return new ResponseEntity<>(errorResponse, e.getErrorCode().getStatusCode());
     }
 
     @ExceptionHandler(CartException.class)

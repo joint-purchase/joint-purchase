@@ -11,15 +11,15 @@ public class BuyPoint {
     @Getter
     public static class Request {
         private String email;
-        private Long money;
+        private Integer money;
     }
 
     @Getter
     @Builder
     public static class Response {
         private String email;
-        private Long changedPoint;
-        private Long currentPoint;
+        private Integer changedPoint;
+        private Integer currentPoint;
         private String eventType;
         private LocalDateTime createdDate;
 

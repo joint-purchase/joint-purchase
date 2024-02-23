@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-@Entity(name = "member")
+@Entity(name = "users")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -23,7 +23,7 @@ public class MemberEntity {
     private Long id;
 
     private String email;
-    private String name;
+    private String username;
     private String password;
     private String address;
 

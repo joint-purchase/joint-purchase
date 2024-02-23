@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class PointHistory {
     private Long pointId;
-    private Long changedPoint;
-    private Long currentPoint;
+    private Integer changedPoint;
+    private Integer currentPoint;
     private String eventType;
     private LocalDateTime createdDate;
 }

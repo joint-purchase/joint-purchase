@@ -11,15 +11,15 @@ public class RefundPoint {
     @Getter
     public static class Request{
         private String email;
-        private Long refundPoint;
+        private Integer refundPoint;
     }
 
     @Getter
     @Builder
     public static class Response{
         private String email;
-        private Long changedPoint;
-        private Long currentPoint;
+        private Integer changedPoint;
+        private Integer currentPoint;
         private String eventType;
         private LocalDateTime createdDate;
 

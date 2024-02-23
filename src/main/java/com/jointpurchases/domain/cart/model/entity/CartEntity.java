@@ -19,5 +19,5 @@ public class CartEntity {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private MemberEntity memberEntity;
-    private Long totalPrice;
+    private Integer totalPrice;
 }

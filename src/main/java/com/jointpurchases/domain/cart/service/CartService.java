@@ -28,7 +28,7 @@ public class CartService {
 
         return CreateCart.Response.fromEntity(this.cartRepository.save(CartEntity.builder()
                 .memberEntity(memberEntity)
-                .totalPrice(0L)
+                .totalPrice(0)
                 .build()));
     }
 

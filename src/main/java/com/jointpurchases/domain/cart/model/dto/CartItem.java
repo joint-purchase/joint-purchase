@@ -9,7 +9,7 @@ public class CartItem {
     @Getter
     public static class Request {
         private Long productId;
-        private Long amount;
+        private Integer amount;
         private String email;
     }
 
@@ -18,8 +18,8 @@ public class CartItem {
     @AllArgsConstructor
     public static class Response {
         private String productName;
-        private Long amount;
-        private Long totalPrice;
+        private Integer amount;
+        private Integer totalPrice;
 
         public static Response fromDto(CartItemDto dto) {
             return Response.builder()
