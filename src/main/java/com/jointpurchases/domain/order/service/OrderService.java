@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -104,7 +105,7 @@ public class OrderService {
         OrderEntity orderEntity = this.orderRepository.findByOrderId(orderId)
                 .orElseThrow(() -> new RuntimeException(" 잘못된 주문 번호 입니다."));
 
-        if (orderEntity.getUserEntity() != userEntity) {
+        if (!Objects.equals(orderEntity.getUserEntity().getEmail(), userEntity.getEmail())) {
             throw new RuntimeException("구매자의 정보가 일치하지 않습니다.");
         }
 
