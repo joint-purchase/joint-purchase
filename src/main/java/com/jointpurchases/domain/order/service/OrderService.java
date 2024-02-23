@@ -1,15 +1,16 @@
 package com.jointpurchases.domain.order.service;
 
+import com.jointpurchases.domain.auth.model.entity.User;
 import com.jointpurchases.domain.cart.model.entity.CartEntity;
 import com.jointpurchases.domain.cart.model.entity.CartItemEntity;
-import com.jointpurchases.domain.cart.model.entity.MemberEntity;
 import com.jointpurchases.domain.cart.repository.CartItemRepository;
 import com.jointpurchases.domain.cart.repository.CartRepository;
-import com.jointpurchases.domain.cart.repository.MemberRepository;
 import com.jointpurchases.domain.order.model.dto.CancelOrder;
 import com.jointpurchases.domain.order.model.dto.OrderDto;
 import com.jointpurchases.domain.order.model.entity.OrderEntity;
+import com.jointpurchases.domain.order.model.entity.OrderedItemEntity;
 import com.jointpurchases.domain.order.repository.OrderRepository;
+import com.jointpurchases.domain.order.repository.OrderedItemRepository;
 import com.jointpurchases.domain.point.model.entity.PointEntity;
 import com.jointpurchases.domain.point.repository.PointRepository;
 import com.jointpurchases.domain.point.service.PointService;
@@ -30,18 +31,16 @@ import java.util.stream.Collectors;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final CartRepository cartRepository;
-    private final MemberRepository memberRepository;
     private final CartItemRepository cartItemRepository;
     private final PointRepository pointRepository;
     private final ProductRepository productRepository;
     private final PointService pointService;
+    private final OrderedItemRepository orderedItemRepository;
 
     //상품 주문
     @Transactional
-    public OrderDto createOrder(String email, Integer money, String address) {
-        MemberEntity memberEntity = getMemberEntity(email);
-
-        CartEntity cartEntity = getCartEntity(memberEntity);
+    public OrderDto createOrder(User userEntity, Integer money, String address) {
+        CartEntity cartEntity = getCartEntity(userEntity);
 
         List<CartItemEntity> cartItemEntityList =
                 this.cartItemRepository.findAllByCartEntity(cartEntity);
@@ -55,27 +54,41 @@ public class OrderService {
             throw new RuntimeException("결제 금액이 부족합니다.");
         }
 
-        Integer currentPoint = this.pointService.getPoint(email).getCurrentPoint();
+        Integer currentPoint = this.pointService.getPoint(userEntity).getCurrentPoint();
         if (currentPoint < money) {
             throw new RuntimeException("포인트 잔액이 부족합니다.");
         }
 
         OrderEntity orderEntity = this.orderRepository.save(OrderEntity.builder()
                 .cartEntity(cartEntity)
-                .memberEntity(memberEntity)
+                .userEntity(userEntity)
                 .orderedDate(LocalDateTime.now())
                 .payment("결제 완료")
                 .address(address)
                 .type("일반 구매")
                 .build());
 
+        //cartItem의 상품들 orderedItem테이블에 저장
         List<Long> productIdList = cartItemEntityList.stream().map(item ->
                 item.getProduct().getId()).toList();
 
+        List<OrderedItemEntity> orderedItemEntities = cartItemEntityList.stream().map(cartItem -> OrderedItemEntity.builder()
+                .orderEntity(orderEntity)
+                .productEntity(cartItem.getProduct())
+                .amount(cartItem.getAmount())
+                .productTotalPrice(cartItem.getProductTotalPrice())
+                .build()).toList();
+
+        this.orderedItemRepository.saveAll(orderedItemEntities);
+
+        //장바구니의 상품들 삭제
+        this.cartItemRepository.deleteAll(cartItemEntityList);
+
+        //상품의 재고 차감
         decreaseProductStock(productIdList, cartItemEntityList);
 
         this.pointRepository.save(PointEntity.builder()
-                .memberEntity(memberEntity)
+                .userEntity(userEntity)
                 .changedPoint(money * -1)
                 .currentPoint(currentPoint - money)
                 .eventType("상품 구매")
@@ -87,13 +100,11 @@ public class OrderService {
 
     //상품 주문 취소
     @Transactional
-    public CancelOrder.Response cancelOrder(String email, Long orderId) {
-        MemberEntity memberEntity = getMemberEntity(email);
-
+    public CancelOrder.Response cancelOrder(User userEntity, Long orderId) {
         OrderEntity orderEntity = this.orderRepository.findByOrderId(orderId)
                 .orElseThrow(() -> new RuntimeException(" 잘못된 주문 번호 입니다."));
 
-        if (orderEntity.getMemberEntity() != memberEntity) {
+        if (orderEntity.getUserEntity() != userEntity) {
             throw new RuntimeException("구매자의 정보가 일치하지 않습니다.");
         }
 
@@ -101,7 +112,7 @@ public class OrderService {
         orderEntity.cancelOrder();
 
         //장바구니의 상품들 재고 증가
-        CartEntity cartEntity = this.cartRepository.findByMemberEntity(memberEntity)
+        CartEntity cartEntity = this.cartRepository.findByUserEntity(userEntity)
                 .orElseThrow(() -> new RuntimeException("장바구니가 없습니다."));
 
         List<CartItemEntity> cartItemEntityList =
@@ -115,10 +126,10 @@ public class OrderService {
         //포인트 환불
         Integer refundPoint = cartEntity.getTotalPrice();
 
-        Integer currentPoint = this.pointService.getPoint(email).getCurrentPoint();
+        Integer currentPoint = this.pointService.getPoint(userEntity).getCurrentPoint();
 
         this.pointRepository.save(PointEntity.builder()
-                .memberEntity(memberEntity)
+                .userEntity(userEntity)
                 .changedPoint(refundPoint)
                 .currentPoint(currentPoint + refundPoint)
                 .createdDate(LocalDateTime.now())
@@ -172,14 +183,8 @@ public class OrderService {
                 .toMap(Product::getId, Function.identity()));
     }
 
-    private CartEntity getCartEntity(MemberEntity memberEntity) {
-        return cartRepository.findByMemberEntity(memberEntity)
+    private CartEntity getCartEntity(User userEntity) {
+        return cartRepository.findByUserEntity(userEntity)
                 .orElseThrow(() -> new RuntimeException("장바구니가 존재하지 않습니다."));
     }
-
-    private MemberEntity getMemberEntity(String email) {
-        return this.memberRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 아이디 입니다."));
-    }
-
 }

@@ -1,6 +1,6 @@
 package com.jointpurchases.domain.point.repository;
 
-import com.jointpurchases.domain.cart.model.entity.MemberEntity;
+import com.jointpurchases.domain.auth.model.entity.User;
 import com.jointpurchases.domain.point.model.entity.PointEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,9 +15,9 @@ import java.util.List;
 @Repository
 public interface PointRepository extends JpaRepository<PointEntity, Long> {
 
-    @Query("select p from point p where p.memberEntity = :memberEntity order by p.createdDate DESC")
-    Page<PointEntity> findByMemberEntity(MemberEntity memberEntity, Pageable pageable);
+    @Query("select p from point p where p.userEntity = :memberEntity order by p.createdDate DESC")
+    Page<PointEntity> findByUserEntity(User userEntity, Pageable pageable);
 
-    List<PointEntity> findAllByMemberEntityAndCreatedDateBetween
-            (MemberEntity memberEntity, LocalDateTime startDateTime, LocalDateTime endDate);
+    List<PointEntity> findAllByUserEntityAndCreatedDateBetween
+            (User userEntity, LocalDateTime startDateTime, LocalDateTime endDate);
 }
