@@ -10,4 +10,6 @@ public interface ProductReadService {
     Page<ProductListResponseDto> getAllProduct(Pageable pageable);
 
     ProductResponseDto getProduct(Long id);
+
+    Page<ProductListResponseDto> getSearchProduct(Pageable pageable,String category, String keyword, String sort);
 }

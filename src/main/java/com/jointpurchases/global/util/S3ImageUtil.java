@@ -1,4 +1,4 @@
-package com.jointpurchases.domain.product.service;
+package com.jointpurchases.global.util;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
@@ -19,7 +19,7 @@ import static com.jointpurchases.global.exception.ErrorCode.INTERNAL_SERVER_ERRO
 
 @RequiredArgsConstructor
 @Service
-public class S3ImageService {
+public class S3ImageUtil {
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;

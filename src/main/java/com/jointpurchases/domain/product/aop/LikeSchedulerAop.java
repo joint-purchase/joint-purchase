@@ -12,12 +12,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class LikeSchedulerAop {
 
-    @Before("execution(* com.jointpurchases.domain.product.service.scheduler.LikeScheduler.likeCountDBUpdate(..))")
+    @Before("execution(* com.jointpurchases.domain.product.aop.scheduler.LikeScheduler.likeCountDBUpdate(..))")
     public void logBefore(JoinPoint joinPoint) {
         log.info("Starting likeCountDBUpdate in LikeScheduler");
     }
 
-    @After("execution(* com.jointpurchases.domain.product.service.scheduler.LikeScheduler.likeCountDBUpdate(..))")
+    @After("execution(* com.jointpurchases.domain.product.aop.scheduler.LikeScheduler.likeCountDBUpdate(..))")
     public void logAfter(JoinPoint joinPoint) {
         log.info("Completed likeCountDBUpdate in LikeScheduler");
     }

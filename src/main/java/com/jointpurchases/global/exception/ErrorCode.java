@@ -10,6 +10,10 @@ public enum ErrorCode {
 
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "내부 서버 오류가 발생했습니다."),
 
+    DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "중복된 이메일 입니다."),
+    INVALID_ADMIN_PASSWORD(HttpStatus.BAD_REQUEST, "관리자 암호가 틀려 등록이 불가합니다."),
+    NOT_FOUND_EMAIL(HttpStatus.BAD_REQUEST, "등록되지 않은 이메일입니다."),
+
     DUPLICATE_CATEGORY(HttpStatus.BAD_REQUEST, "해당 카테고리가 이미 존재합니다."),
     NOT_FOUND_CATEGORY(HttpStatus.BAD_REQUEST, "해당 카테고리가 존재하지 않습니다."),
 
@@ -30,6 +34,7 @@ public enum ErrorCode {
 
     NO_POINT_USING_HISTORY(HttpStatus.NOT_FOUND, "포인트 사용 내역이 없습니다."),
     NOT_ENOUGH_POINT_BALANCE(HttpStatus.BAD_REQUEST, "포인트 잔액이 부족합니다."),
+
     PRODUCT_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당상품이 존재하지 않습니다."),
     NOT_PRODUCT_BY_USER(HttpStatus.BAD_REQUEST, "회원님이 등록한 상품이 아닙니다."),
     ;

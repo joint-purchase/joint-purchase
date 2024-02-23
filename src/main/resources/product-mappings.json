@@ -1,0 +1,22 @@
+{
+  "properties": {
+    "id": {
+      "type": "long"
+    },
+    "productName": {
+      "type": "text",
+      "analyzer": "korean"
+    },
+    "price": {
+      "type": "integer"
+    },
+    "categoryName": {
+      "type": "text",
+      "analyzer": "korean"
+    },
+    "imageUrl": {
+      "type": "text"
+    }
+
+  }
+}

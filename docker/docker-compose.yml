@@ -1,0 +1,60 @@
+version: "3"
+
+services:
+
+  server:
+    build:
+      context: ..
+      dockerfile: Dockerfile  # 사용할 Dockerfile 지정
+    container_name: joint-purchase
+    ports:
+      - "8080:8080"
+    networks:
+      - joint
+    depends_on:
+      - redis
+      - elasticsearch
+    restart: always
+
+  redis:
+    image: redis:latest
+    container_name: my-redis2
+    ports:
+      - "6379:6379"
+    networks:
+      - joint
+    restart: always
+
+  elasticsearch:
+    build:
+      context: ./elastic
+      dockerfile: Dockerfile
+    container_name: elasticsearch
+    environment:
+      - cluster.name=es-docker
+      - node.name=es01
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - joint
+    restart: always
+
+  kibana:
+    container_name: kibana2
+    image: docker.elastic.co/kibana/kibana:8.11.3
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - joint
+    restart: always
+
+networks:
+  joint:
+    driver: bridge
