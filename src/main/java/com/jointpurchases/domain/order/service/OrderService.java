@@ -9,6 +9,7 @@ import com.jointpurchases.domain.cart.repository.MemberRepository;
 import com.jointpurchases.domain.order.model.dto.CancelOrder;
 import com.jointpurchases.domain.order.model.dto.OrderDto;
 import com.jointpurchases.domain.order.model.entity.OrderEntity;
+import com.jointpurchases.domain.order.model.entity.OrderedItemEntity;
 import com.jointpurchases.domain.order.repository.OrderRepository;
 import com.jointpurchases.domain.point.model.entity.PointEntity;
 import com.jointpurchases.domain.point.repository.PointRepository;
@@ -35,6 +36,7 @@ public class OrderService {
     private final PointRepository pointRepository;
     private final ProductRepository productRepository;
     private final PointService pointService;
+    private final OrderedItemRepository orderedItemRepository;
 
     //상품 주문
     @Transactional
@@ -69,9 +71,23 @@ public class OrderService {
                 .type("일반 구매")
                 .build());
 
+        //cartItem의 상품들 orderedItem테이블에 저장
         List<Long> productIdList = cartItemEntityList.stream().map(item ->
                 item.getProduct().getId()).toList();
 
+        List<OrderedItemEntity> orderedItemEntities = cartItemEntityList.stream().map(cartItem -> OrderedItemEntity.builder()
+                .orderEntity(orderEntity)
+                .productEntity(cartItem.getProduct())
+                .amount(cartItem.getAmount())
+                .productTotalPrice(cartItem.getProductTotalPrice())
+                .build()).toList();
+        
+        this.orderedItemRepository.saveAll(orderedItemEntities);
+
+        //장바구니의 상품들 삭제
+        this.cartItemRepository.deleteAll(cartItemEntityList);
+
+        //상품의 재고 차감
         decreaseProductStock(productIdList, cartItemEntityList);
 
         this.pointRepository.save(PointEntity.builder()
