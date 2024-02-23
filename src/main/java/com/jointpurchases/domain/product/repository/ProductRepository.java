@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product, Long>, CustomProductRepository {
     List<Product> findAllByIdIn(List<Long> productId);
+
 }

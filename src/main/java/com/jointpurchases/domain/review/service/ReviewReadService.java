@@ -1,5 +1,6 @@
 package com.jointpurchases.domain.review.service;
 
+import com.jointpurchases.domain.auth.model.entity.User;
 import com.jointpurchases.domain.review.model.dto.GetReviewDto;
 import com.jointpurchases.domain.review.model.entity.ReviewEntity;
 import com.jointpurchases.domain.review.model.entity.ReviewImageEntity;
@@ -37,7 +38,9 @@ public class ReviewReadService {
                 filePaths(filePaths).
                 build();
     }
-
+/*
+상품 리뷰 조회
+ */
     public List<GetReviewDto.Response> getAllByProductId(long id){
         List<GetReviewDto.Response> getReviewDtoResponseList = new ArrayList<>();
         List<ReviewEntity> getReviewList = reviewRepository.findAllByProductId(id);
@@ -64,4 +67,34 @@ public class ReviewReadService {
 
         return getReviewDtoResponseList;
     }
+/*
+유저 리뷰 조회
+ */
+    public List<GetReviewDto.Response> getAllByUserId(User user){
+        List<GetReviewDto.Response> getReviewDtoResponseList = new ArrayList<>();
+        List<ReviewEntity> getReviewList = reviewRepository.findAllByProductId(user.getId());
+
+        for(ReviewEntity review : getReviewList){
+            List<ReviewImageEntity> getReviewImageList = reviewImageRepository.findAllByReviewId(review.getId());
+            ArrayList<String> filePaths = new ArrayList<>();
+
+            for(ReviewImageEntity ReviewImage : getReviewImageList){
+                filePaths.add(ReviewImage.getFilepath());
+            }
+
+            GetReviewDto.Response response = GetReviewDto.Response.builder().
+                    title(review.getTitle()).
+                    contents(review.getContents()).
+                    rating(review.getRating()).
+                    registerDate(review.getRegisterDate()).
+                    modifiedDate(review.getModifiedDate()).
+                    filePaths(filePaths).
+                    build();
+
+            getReviewDtoResponseList.add(response);
+        }
+
+        return getReviewDtoResponseList;
+    }
+
 }

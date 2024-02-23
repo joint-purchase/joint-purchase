@@ -1,5 +1,7 @@
 package com.jointpurchases.domain.review.model.entity;
 
+import com.jointpurchases.domain.auth.model.entity.User;
+import com.jointpurchases.domain.product.model.entity.Product;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -31,16 +33,21 @@ public class ReviewEntity {
 
     @ManyToOne
     @JoinColumn(name = "PRODUCT_ID")
-    private ProductEntity product;
+    private Product product;
+
+    @ManyToOne
+    @JoinColumn(name = "USER_ID")
+    private User user;
 
     @Builder
-    public ReviewEntity(int id, String title, String contents, int rating, LocalDateTime registerDate, LocalDateTime modifiedDate, ProductEntity product){
+    public ReviewEntity(int id, String title, String contents, int rating, LocalDateTime registerDate, LocalDateTime modifiedDate, Product product, User user){
         this.title = title;
         this.contents = contents;
         this.rating = rating;
         this.registerDate = registerDate;
         this.modifiedDate = modifiedDate;
         this.product = product;
+        this.user = user;
     }
 
     /*

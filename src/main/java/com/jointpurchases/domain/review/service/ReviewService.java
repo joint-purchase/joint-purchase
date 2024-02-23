@@ -1,13 +1,14 @@
 package com.jointpurchases.domain.review.service;
 
+import com.jointpurchases.domain.auth.model.entity.User;
+import com.jointpurchases.domain.product.model.entity.Product;
+import com.jointpurchases.domain.product.repository.ProductRepository;
 import com.jointpurchases.domain.review.exception.InvalidFileException;
 import com.jointpurchases.domain.review.model.dto.CreateReviewDto;
 
 import com.jointpurchases.domain.review.model.dto.ModifyReviewDto;
-import com.jointpurchases.domain.review.model.entity.ProductEntity;
 import com.jointpurchases.domain.review.model.entity.ReviewEntity;
 import com.jointpurchases.domain.review.model.entity.ReviewImageEntity;
-import com.jointpurchases.domain.review.repository.ProductRepository;
 import com.jointpurchases.domain.review.repository.ReviewImageRepository;
 import com.jointpurchases.domain.review.repository.ReviewRepository;
 import jakarta.annotation.Nullable;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -32,9 +34,9 @@ public class ReviewService {
     /*
     리뷰 작성
      */
-    public CreateReviewDto.Response createReview(long productId, String title, String contents, int rating, @Nullable List<MultipartFile> files) throws IOException {
+    public CreateReviewDto.Response createReview(long productId, String title, String contents, int rating, @Nullable List<MultipartFile> files, User user) throws IOException {
         LocalDateTime now = LocalDateTime.now();
-        ProductEntity product = productRepository.getById(productId);
+        Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("상품이 없습니다."));
         String projectPath = System.getProperty("user.dir") + "\\image\\";//기본 폴더 경로
         ArrayList<String> filePaths = new ArrayList<>();//반환할 파일 경로 목록
         ArrayList<ReviewImageEntity> reviewImageEntityList = new ArrayList<ReviewImageEntity>();//저장할 파일 엔터티 목록
@@ -45,6 +47,7 @@ public class ReviewService {
                 contents(contents).
                 rating(rating).
                 registerDate(now).
+                user(user).
                 build();
 
         reviewRepository.save(newReview);
@@ -75,7 +78,7 @@ public class ReviewService {
             }
         }
 
-        CreateReviewDto.Response response = CreateReviewDto.Response.builder().
+        return CreateReviewDto.Response.builder().
                 productId(productId).
                 title(title).
                 contents(contents).
@@ -83,13 +86,11 @@ public class ReviewService {
                 registerDate(now).
                 filePaths(filePaths).
                 build();
-
-        return CreateReviewDto.Response.response(response);
     }
 /*
 리뷰 수정
  */
-    public ModifyReviewDto.Response modifyReview(long id, String title, String contents, int rating, @Nullable List<MultipartFile> files) throws IOException {
+    public ModifyReviewDto.Response modifyReview(long id, String title, String contents, int rating, @Nullable List<MultipartFile> files, User user) throws IOException {
         ReviewEntity nowReview = reviewRepository.findById(id).get();
         List<ReviewImageEntity> nowReviewImageList = reviewImageRepository.findAllByReviewId(id);
         LocalDateTime now = LocalDateTime.now();
@@ -135,7 +136,7 @@ public class ReviewService {
             }
         }
 
-        ModifyReviewDto.Response response = ModifyReviewDto.Response.builder().
+        return ModifyReviewDto.Response.builder().
                 title(title).
                 contents(contents).
                 rating(rating).
@@ -143,8 +144,6 @@ public class ReviewService {
                 modifiedDate(now).
                 filePaths(filePaths).
                 build();
-
-        return ModifyReviewDto.Response.response(response);
     }
 /*
 리뷰 단일 삭제
@@ -177,6 +176,18 @@ public class ReviewService {
         }
 
         return id;
+    }
+/*
+회원 리뷰 전체 삭제
+ */
+    public long deleteAllReviewByUserId(User user){
+        List<ReviewEntity> nowReviewList = reviewRepository.findAllByUserId(user.getId());
+
+        for(ReviewEntity reviewEntity : nowReviewList){
+            deleteById(reviewEntity.getId());
+        }
+
+        return user.getId();
     }
 }
 
