@@ -1,4 +1,4 @@
-# Joint_Purchase
+# 🤝Joint_Purchase
 해외 배송 시 공동 구매를 통한 비용 절감
 
 # 기획 배경
