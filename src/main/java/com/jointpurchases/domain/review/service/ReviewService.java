@@ -2,12 +2,15 @@ package com.jointpurchases.domain.review.service;
 
 import com.jointpurchases.domain.review.exception.InvalidFileException;
 import com.jointpurchases.domain.review.model.dto.CreateReviewDto;
-import com.jointpurchases.domain.review.model.dto.GetReviewDto;
+
 import com.jointpurchases.domain.review.model.dto.ModifyReviewDto;
+import com.jointpurchases.domain.review.model.entity.ProductEntity;
 import com.jointpurchases.domain.review.model.entity.ReviewEntity;
 import com.jointpurchases.domain.review.model.entity.ReviewImageEntity;
+import com.jointpurchases.domain.review.repository.ProductRepository;
 import com.jointpurchases.domain.review.repository.ReviewImageRepository;
 import com.jointpurchases.domain.review.repository.ReviewRepository;
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,54 +18,70 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final ReviewImageRepository reviewImageRepository;
+    private final ProductRepository productRepository;
+    private static final int MAXIMUM_IMAGE = 5;
     /*
     리뷰 작성
      */
-    public CreateReviewDto.Response createReview(String title, String contents, int rating, List<MultipartFile> files) throws IOException {
-        if(files.size() > 5){
-            throw new InvalidFileException();
-        }
+    public CreateReviewDto.Response createReview(long productId, String title, String contents, int rating, @Nullable List<MultipartFile> files) throws IOException {
         LocalDateTime now = LocalDateTime.now();
+        ProductEntity product = productRepository.getById(productId);
         String projectPath = System.getProperty("user.dir") + "\\image\\";//기본 폴더 경로
-        ArrayList<String> fileNames = new ArrayList<>();//반환할 파일 이름 목록
-        ReviewEntity newReview = new ReviewEntity();
+        ArrayList<String> filePaths = new ArrayList<>();//반환할 파일 경로 목록
         ArrayList<ReviewImageEntity> reviewImageEntityList = new ArrayList<ReviewImageEntity>();//저장할 파일 엔터티 목록
 
-        newReview.setTitle(title);
-        newReview.setContents(contents);
-        newReview.setRating(rating);
-        newReview.setRegisterDate(LocalDateTime.now());
-        reviewRepository.save(newReview);
-
-        for (int i = 0; i < files.size(); i++) {
-            ReviewImageEntity newReviewImage = new ReviewImageEntity();
-            UUID uuid = UUID.randomUUID();//파일 이름 랜덤생성
-            String filename = uuid + "-" + files.get(i).getOriginalFilename();
-            File saveFile = new File(projectPath, filename);
-            files.get(i).transferTo(saveFile);
-            fileNames.add(filename);
-            newReviewImage.setFilename(filename);
-            newReviewImage.setFilepath(projectPath + filename);
-            newReviewImage.setUploadDate(now);
-            newReviewImage.setReview(newReview);
-            reviewImageEntityList.add(newReviewImage);
-        }
-
-        reviewImageRepository.saveAll(reviewImageEntityList);
-
-        CreateReviewDto.Response response = CreateReviewDto.Response.builder().
+        ReviewEntity newReview = ReviewEntity.builder().
+                product(product).
                 title(title).
                 contents(contents).
                 rating(rating).
                 registerDate(now).
-                fileNames(fileNames).
+                build();
+
+        reviewRepository.save(newReview);
+
+        if(files != null){
+            if(files.size() > MAXIMUM_IMAGE){
+                throw new InvalidFileException();
+            } else {
+                for (MultipartFile file : files) {
+                    ReviewImageEntity newReviewImage = new ReviewImageEntity();
+                    UUID uuid = UUID.randomUUID();//파일 이름 랜덤생성
+                    String filename = uuid + "-" + file.getOriginalFilename();
+                    File saveFile = new File(projectPath, filename);
+                    file.transferTo(saveFile);
+
+                    newReviewImage = ReviewImageEntity.builder().
+                            filename(filename).
+                            filepath(projectPath + filename).
+                            uploadDate(now).
+                            review(newReview).
+                            build();
+
+                    reviewImageEntityList.add(newReviewImage);
+                    filePaths.add(projectPath + filename);
+                }
+
+                reviewImageRepository.saveAll(reviewImageEntityList);
+            }
+        }
+
+        CreateReviewDto.Response response = CreateReviewDto.Response.builder().
+                productId(productId).
+                title(title).
+                contents(contents).
+                rating(rating).
+                registerDate(now).
+                filePaths(filePaths).
                 build();
 
         return CreateReviewDto.Response.response(response);
@@ -70,50 +89,51 @@ public class ReviewService {
 /*
 리뷰 수정
  */
-    public ModifyReviewDto.Response modifyReview(int id, String title, String contents, int rating, List<MultipartFile> files) throws IOException {
-        if(files.size() > 5){
-            throw new InvalidFileException();
-        }
-        ReviewEntity nowReview = reviewRepository.getById(id);
-        List<ReviewImageEntity> nowReviewImageList = reviewImageRepository.getAllByReviewId(id);
+    public ModifyReviewDto.Response modifyReview(long id, String title, String contents, int rating, @Nullable List<MultipartFile> files) throws IOException {
+        ReviewEntity nowReview = reviewRepository.findById(id).get();
+        List<ReviewImageEntity> nowReviewImageList = reviewImageRepository.findAllByReviewId(id);
         LocalDateTime now = LocalDateTime.now();
         String projectPath = System.getProperty("user.dir") + "\\image\\";//기본 폴더 경로
-        ArrayList<String> fileNames = new ArrayList<>();//반환할 파일 이름 목록
-        ArrayList<ReviewImageEntity> reviewImageEntityList = new ArrayList<ReviewImageEntity>();//저장할 파일 엔터티 목록
+        ArrayList<String> filePaths = new ArrayList<>();//반환할 파일 이름 목록
+        ArrayList<ReviewImageEntity> reviewImageEntityList = new ArrayList<>();//저장할 파일 엔터티 목록
 
-        nowReview.setTitle(title);
-        nowReview.setContents(contents);
-        nowReview.setRating(rating);
-        nowReview.setModifiedDate(now);
-        reviewRepository.save(nowReview);
+        nowReview.updateReview(title, contents,rating,now);
 
         reviewRepository.save(nowReview);
 
-        for(int i = 0; i < nowReviewImageList.size();i++){
-            File deleteFile = new File(nowReviewImageList.get(i).getFilepath());
+        for(ReviewImageEntity reviewImage : nowReviewImageList){
+            File deleteFile = new File(reviewImage.getFilepath());
             if(deleteFile.exists()){
                 deleteFile.delete();
-                reviewImageRepository.deleteById(nowReviewImageList.get(i).getId());
+                reviewImageRepository.deleteById(reviewImage.getId());
             } else {
                 throw new RuntimeException("파일이 존재 하지 않습니다.");
             }
         }
 
-        for (int i = 0; i < files.size(); i++) {
-            ReviewImageEntity newReviewImage = new ReviewImageEntity();
-            UUID uuid = UUID.randomUUID();//파일 이름 랜덤생성
-            String filename = uuid + "-" + files.get(i).getOriginalFilename();
-            File saveFile = new File(projectPath, filename);
-            files.get(i).transferTo(saveFile);
-            fileNames.add(filename);
-            newReviewImage.setFilename(filename);
-            newReviewImage.setFilepath(projectPath + filename);
-            newReviewImage.setUploadDate(now);
-            newReviewImage.setReview(nowReview);
-            reviewImageEntityList.add(newReviewImage);
-        }
+        if(files != null){
+            if(files.size() > MAXIMUM_IMAGE){
+                throw new InvalidFileException();
+            } else {
+                for (MultipartFile file : files) {
+                    UUID uuid = UUID.randomUUID();//파일 이름 랜덤생성
+                    String filename = uuid + "-" + file.getOriginalFilename();
+                    File saveFile = new File(projectPath, filename);
+                    file.transferTo(saveFile);
 
-        reviewImageRepository.saveAll(reviewImageEntityList);
+                    ReviewImageEntity newReviewImage = ReviewImageEntity.builder().
+                            filename(filename).
+                            filepath(projectPath + filename).
+                            uploadDate(now).
+                            review(nowReview).
+                            build();
+
+                    reviewImageEntityList.add(newReviewImage);
+                    filePaths.add(projectPath + filename);
+                }
+                reviewImageRepository.saveAll(reviewImageEntityList);
+            }
+        }
 
         ModifyReviewDto.Response response = ModifyReviewDto.Response.builder().
                 title(title).
@@ -121,28 +141,42 @@ public class ReviewService {
                 rating(rating).
                 registerDate(nowReview.getRegisterDate()).
                 modifiedDate(now).
-                fileNames(fileNames).
+                filePaths(filePaths).
                 build();
 
         return ModifyReviewDto.Response.response(response);
     }
 /*
-리뷰 조회
+리뷰 단일 삭제
  */
-    public GetReviewDto.Response getOneById(int id){
-        ReviewEntity getReview = reviewRepository.getById(id);
-        List<ReviewImageEntity> getReviewImageList = reviewImageRepository.getAllByReviewId(id);
-        ArrayList<String> fileNames = new ArrayList<>();
+    public long deleteById(long id){
+        List<ReviewImageEntity> nowReviewImageList = reviewImageRepository.findAllByReviewId(id);
 
-        for(int i = 0; i < getReviewImageList.size();i++){
-            fileNames.add(getReviewImageList.get(i).getFilename());
+        for(ReviewImageEntity ReviewImage : nowReviewImageList){
+            File deleteFile = new File(ReviewImage.getFilepath());
+            if(deleteFile.exists()){
+                deleteFile.delete();
+                reviewImageRepository.deleteById(ReviewImage.getId());
+            } else {
+                throw new RuntimeException("파일이 존재 하지 않습니다.");
+            }
+            reviewImageRepository.deleteById(ReviewImage.getId());
         }
 
-        GetReviewDto.Response response = new GetReviewDto.Response(getReview.getTitle(),
-                getReview.getContents(), getReview.getRating(), getReview.getRegisterDate(),
-                getReview.getModifiedDate(), fileNames);
-        return response;
+        reviewRepository.deleteById(id);
+        return id;
     }
+/*
+상품 리뷰 전체 삭제
+ */
+    public long deleteAllReviewByProductId(long id){
+        List<ReviewEntity> nowReviewList = reviewRepository.findAllByProductId(id);
 
+        for(ReviewEntity reviewEntity : nowReviewList){
+            deleteById(reviewEntity.getId());
+        }
+
+        return id;
+    }
 }
 

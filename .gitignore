@@ -4,9 +4,11 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+
+application.properties
+*.png
 *.jpg
 *.jpeg
-*.png
 *.gif
 
 ### STS ###
@@ -43,3 +45,5 @@ application.properties
 /src/main/resources/application.properties
 /src/main/generated
 
+### querydsl ###
+/src/main/generated

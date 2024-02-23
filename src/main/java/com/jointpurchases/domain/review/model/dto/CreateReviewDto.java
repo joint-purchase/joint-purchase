@@ -15,9 +15,10 @@ public class CreateReviewDto {
  */
     @Getter
     public static class Request {
-    private String title;
-    private String contents;
-    private int rating;
+        private long productId;
+        private String title;
+        private String contents;
+        private int rating;
     }
     /*
     리뷰 작성 반환값
@@ -27,21 +28,22 @@ public class CreateReviewDto {
     @Getter
     @Builder
     public static class Response {
+        private long productId;
         private String title;
         private String contents;
         private int rating;
         private LocalDateTime registerDate;
-        private ArrayList<String> fileNames;
+        private ArrayList<String> filePaths;
 
         public static Response response(Response response){
             return Response.builder().
-                title(response.getTitle()).
-                contents(response.getContents()).
-                rating(response.getRating()).
-                registerDate(response.getRegisterDate()).
-                fileNames(response.getFileNames()).
-                build();
+                    productId(response.productId).
+                    title(response.getTitle()).
+                    contents(response.getContents()).
+                    rating(response.getRating()).
+                    registerDate(response.getRegisterDate()).
+                    filePaths(response.getFilePaths()).
+                    build();
         }
     }
-
 }
