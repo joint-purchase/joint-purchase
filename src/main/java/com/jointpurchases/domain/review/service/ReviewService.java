@@ -91,7 +91,7 @@ public class ReviewService {
 리뷰 수정
  */
     public ModifyReviewDto.Response modifyReview(long id, String title, String contents, int rating, @Nullable List<MultipartFile> files, User user) throws IOException {
-        ReviewEntity nowReview = reviewRepository.findById(id).get();
+        ReviewEntity nowReview = reviewRepository.findById(id).orElseThrow(() -> new RuntimeException("리뷰가 없습니다."));
         List<ReviewImageEntity> nowReviewImageList = reviewImageRepository.findAllByReviewId(id);
         LocalDateTime now = LocalDateTime.now();
         String projectPath = System.getProperty("user.dir") + "\\image\\";//기본 폴더 경로
