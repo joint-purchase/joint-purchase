@@ -1,4 +1,4 @@
-# 🤝Joint_Purchase-Backend
+# 🤝Joint_Purchase_Backend
 공동 구매를 통한 비용 절감 및 대량 구매 및 공통 관심사를 가진 사람들과의 네트워킹
 
 # 기획 배경
