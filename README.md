@@ -74,9 +74,16 @@
    - 상품을 구매한 사용자는 상품에 대한 리뷰 할 수 있다.
    - 상품 리뷰 시 사진, 리뷰 내용, 점수를 입력할 수 있다.
    - 리뷰 등록 시 상품을 구매한 사용자의 아이디, 상품 이름, 등록 날짜와 수정 날짜가 추가로 표시된다.
- 
+   
+## API 명세서
+<details>
+  (https://www.notion.so/API-970e874f8cb34ac6948813ee79370b65)
+</details>
+
 # ERD
-![스크린샷 2024-02-15 214002](https://github.com/joint-purchase/joint-purchase/assets/112931862/a6a60c25-f6b3-498d-be64-316bce56ab08)
+<details>
+  ![스크린샷 2024-02-15 214002](https://github.com/joint-purchase/joint-purchase/assets/112931862/a6a60c25-f6b3-498d-be64-316bce56ab08)
+</details>
 <br><br><br>
 
   
