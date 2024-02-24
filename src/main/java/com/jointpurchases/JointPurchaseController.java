@@ -8,6 +8,6 @@ public class JointPurchaseController {
 
     @GetMapping("/")
     public String hello(){
-        return "배포 테스트";
+        return "hello joint-purchase";
     }
 }
