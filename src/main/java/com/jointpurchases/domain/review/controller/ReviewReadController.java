@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/review")
+@RequestMapping(value = "/api/review/read")
 public class ReviewReadController {
     private final ReviewReadService reviewReadService;
     /*

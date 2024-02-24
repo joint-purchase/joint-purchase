@@ -54,7 +54,7 @@ dto 구성 : 리뷰ID(id), 제목(title), 내용(contents), 별점(rating),사�
 /*
 유저 리뷰 전체 삭제
  */
-    @DeleteMapping("/User")
+    @DeleteMapping("/user")
     public long deleteAllReviewByUserId(@LoginUser final User user){
         return reviewService.deleteAllReviewByUserId(user);
     }

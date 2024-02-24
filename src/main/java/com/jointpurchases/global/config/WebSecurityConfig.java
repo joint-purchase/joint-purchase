@@ -62,6 +62,8 @@ public class WebSecurityConfig {
                         .requestMatchers("/api/category/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET,"/api/product/**").permitAll()
                         .requestMatchers("/v3/**", "/swagger-ui/**").permitAll()
+                        .requestMatchers("/api/review/read/product").permitAll()
+                        .requestMatchers("/api/deadline/**").hasRole("ADMIN")
                         .requestMatchers("/").permitAll()
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );
