@@ -98,11 +98,18 @@
 | --- | --- |
 | 협업 툴 | ![Notion](https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=notion&logoColor=white) |
 | 소통 | ![Discord](https://img.shields.io/badge/Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white) ![Slack](https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white) |
+
+<br>
+<br>
+
+## 📂서비스 아키텍처
+![joint-purchase drawio](https://github.com/joint-purchase/joint-purchase/assets/112931862/b7699ea3-a0ab-4fca-8201-976bdc7d029d)
+<br>
+<br>
 <br>
 
 ## 👀 개발 기간
 #### 2024. 01 ~ 2024. 02
-<br>
 
 # 📄 Commit Message Convention
 
