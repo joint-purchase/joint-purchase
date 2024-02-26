@@ -2,7 +2,7 @@ name: joint-purchase ci-cd
 
 on:
   push:
-    branches: [ "develop" ]
+    branches: [ "master" ]
 
 permissions:
   contents: read

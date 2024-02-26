@@ -55,4 +55,15 @@ public class RedisUtil {
     private String userLikedProductKey(Long userId, Long productId) {
         return "user:" + userId + ":product:" + productId;
     }
+
+
+    public void deleteUserLikedProductKeys(Long productId) {
+        String pattern = "user:*:product:" + productId;
+
+        Set<String> keysToDelete = getKeys(pattern);
+
+        if (!Objects.requireNonNull(keysToDelete).isEmpty()) {
+            redisTemplate.delete(keysToDelete);
+        }
+    }
 }

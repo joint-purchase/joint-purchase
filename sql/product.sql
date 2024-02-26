@@ -1,0 +1,2 @@
+INSERT INTO product (product_name, description, price, stock_quantity, like_count, category_id, user_id, created_at, modified_at)
+VALUES ('바나나', '신선한 바나나입니다.', 1000, 50, 0, 4, 1,'2024-02-22 12:00:00', '2024-02-22 12:00:00');

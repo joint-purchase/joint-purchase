@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -104,8 +105,9 @@ public class DeadlineService {
 /*
 하루 마다 메일 보낼 팀 확인
  */
+    @Async
     @Scheduled(cron = "* * 0 * * *")
-    private void setMailing(){
+    public void setMailing(){
         List<DeadlineEntity> teamEntities = deadlineRepository.findAll();
         for(DeadlineEntity teamEntity : teamEntities){
             if(teamEntity.getEndDate().isAfter(LocalDateTime.now()) && teamEntity.getEndDate().isBefore(LocalDateTime.now().plusDays(1)))

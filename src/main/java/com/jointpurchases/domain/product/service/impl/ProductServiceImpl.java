@@ -115,6 +115,8 @@ public class ProductServiceImpl implements ProductService {
         deleteImageS3(product.getProductImages());
         productRepository.delete(product);
 
+        redisUtil.deleteUserLikedProductKeys(id);
+
         ProductDocument productDocument = findProductDocumentOrElseThrow(product.getId());
         elasticsearchOperations.delete(productDocument);
 
