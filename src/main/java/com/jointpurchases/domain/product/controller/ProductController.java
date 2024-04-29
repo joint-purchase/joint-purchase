@@ -22,7 +22,7 @@ public class ProductController {
     private final ProductService productService;
 
 
-    @PostMapping("/product")
+    @PostMapping("/products")
     public ResponseEntity<?> createProduct(
             @RequestPart(value = "product") @Valid ProductRequestDto requestDto,
             @RequestPart(value = "image") List<MultipartFile> files,
@@ -33,7 +33,7 @@ public class ProductController {
                         productService.createProduct(requestDto, user, files)));
     }
 
-    @PostMapping("/product/{productId}/like")
+    @PostMapping("/products/{productId}/like")
     public ResponseEntity<?> likeProduct(
             @PathVariable final Long productId,
             @LoginUser final User user)
@@ -42,7 +42,7 @@ public class ProductController {
                 .body(productService.likeProduct(productId, user.getId()));
     }
 
-    @PutMapping("/product/{id}")
+    @PutMapping("/products/{id}")
     public ResponseEntity<?> updateProduct(
             @PathVariable final Long id,
             @RequestPart(value = "product") @Valid ProductRequestDto requestDto,
@@ -54,7 +54,7 @@ public class ProductController {
                         productService.updateProduct(id, requestDto,user, files)));
     }
 
-    @DeleteMapping("/product/{id}")
+    @DeleteMapping("/products/{id}")
     public ResponseEntity<?> deleteProduct(
             @PathVariable final Long id,
             @LoginUser final User user)

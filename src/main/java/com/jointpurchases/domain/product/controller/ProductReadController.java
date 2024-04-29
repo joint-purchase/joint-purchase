@@ -14,7 +14,7 @@ public class ProductReadController {
     private final ProductReadService productReadService;
 
 
-    @GetMapping("/product")
+    @GetMapping("/products")
     public ResponseEntity<?> getAllProduct(
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "10") int size)
@@ -23,14 +23,14 @@ public class ProductReadController {
                 .body(productReadService.getAllProduct(PageRequest.of(page - 1, size)));
     }
 
-    @GetMapping("/product/{id}")
+    @GetMapping("/products/{id}")
     public ResponseEntity<?> getProduct(@PathVariable final Long id)
     {
         return ResponseEntity.ok()
                 .body(productReadService.getProduct(id));
     }
 
-    @GetMapping("/product/search")
+    @GetMapping("/products")
     public ResponseEntity<?> getSearchProduct(
             @RequestParam(value = "page", defaultValue = "1", required = false) int page,
             @RequestParam(value = "size", defaultValue = "10", required = false) int size,
